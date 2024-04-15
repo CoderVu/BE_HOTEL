@@ -1,2 +1,4 @@
-package com.example.booking_hotel.controller;public class BookedRoomController {
+package com.example.booking_hotel.controller;
+
+public class BookedRoomController {
 }

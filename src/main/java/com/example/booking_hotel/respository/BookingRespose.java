@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookingRespository {
+public class BookingRespose {
     private Long bookingId;
     private LocalDate checkInDate;
 
@@ -16,18 +16,18 @@ public class BookingRespository {
 
     private String guestFullName;
 
-    private String gestEmail;
+    private String guestEmail;
 
-    private int  NumOfAdults;
+    private int  numOfAdults;
 
-    private int NumOfChilren;
+    private int numOfChilren;
 
     private int totalNumOfGuest;
 
     private String bookingConfirmationCode;
     private RoomModel room;
 
-    public BookingRespository(Long bookingId, LocalDate checkInDate, LocalDate checkOutDate, String bookingConfirmationCode) {
+    public BookingRespose(Long bookingId, LocalDate checkInDate, LocalDate checkOutDate, String bookingConfirmationCode) {
         this.bookingId = bookingId;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
