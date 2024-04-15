@@ -4,7 +4,6 @@ import com.example.booking_hotel.exception.InternalServerException;
 import com.example.booking_hotel.exception.ResourceNotFoundException;
 import com.example.booking_hotel.model.Room;
 import com.example.booking_hotel.respository.RoomRepository;
-import com.google.protobuf.Internal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
