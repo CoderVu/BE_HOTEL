@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,7 +30,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
 @RequestMapping("/rooms")
 public class RoomController {
 
@@ -37,6 +38,7 @@ public class RoomController {
     private final BookingService bookingService;
 
     @PostMapping("/add/new-room")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<RoomModel> addNewRoom(
             @RequestParam("photo") MultipartFile photo,
             @RequestParam("roomType") String roomType,
@@ -74,13 +76,14 @@ public class RoomController {
 
 
     }
-
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("delete/room/{roomId}")
     public ResponseEntity<Void> deleteRoom(@PathVariable Long roomId) {
         roomService.deleteRoom(roomId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
+    @PreAuthorize("hasAuthority('ADMIN')")
 
     @PutMapping("/update/{roomId}")
     public ResponseEntity<RoomModel> updateRoom(@PathVariable Long roomId,

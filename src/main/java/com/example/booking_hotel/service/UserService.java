@@ -28,7 +28,7 @@ public class UserService implements IUserService {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         System.out.println(user.getPassword());
-        Role userRole = roleRepository.findByName("ROLE_USER").get();
+        Role userRole = roleRepository.findByName("USER").get();
         user.setRoles(Collections.singletonList(userRole));
         return userRepository.save(user);
     }
@@ -52,5 +52,10 @@ public class UserService implements IUserService {
     public User getUser(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+    @Override
+    public User getUserProfile(String userId) {
+        return userRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + userId));
     }
 }

@@ -57,8 +57,8 @@ public class WebSecurityConfig {
                         exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(auth -> auth
-                        .antMatchers("/auth/**", "/rooms/**", "/bookings/**").permitAll()
-                        .antMatchers("/roles/**").hasRole("ADMIN")
+                        .antMatchers("/auth/**", "/rooms/types", "/rooms/all-rooms", "/rooms/room/{roomId}","/users/profile/**","/users/{email}").permitAll() // Cho phép tất cả mọi người truy cập
+                        .antMatchers("/rooms/add/new-room", "/rooms/delete/room/**", "/rooms/update/**","/users/all_roles").hasAuthority("ADMIN") // Chỉ cho phép ADMIN truy cập vào CRUD Room
                         .anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);

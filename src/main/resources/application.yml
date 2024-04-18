@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8082
 spring:
   datasource:
     username: root
@@ -8,8 +8,8 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
   security:
     jwt:
-      secret-key: 36763979244226452948404D635166546A576D5A7134743777217A25432A462D
-      expire-length: 3600
+      secret-key: 4545454434324326737432864237498327493274983274893274893793773298
+      expire-length: 3600000
   jpa:
     show-sql: true
     hibernate:
