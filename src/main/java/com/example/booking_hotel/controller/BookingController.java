@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
-@RequestMapping("/bookings")
+@RequestMapping("/api/v1/bookings")
 public class BookingController {
 
     private final BookingServiceImpl bookingService;

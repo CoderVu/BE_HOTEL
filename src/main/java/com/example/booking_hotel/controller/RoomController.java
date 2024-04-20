@@ -1,6 +1,5 @@
 package com.example.booking_hotel.controller;
 
-import com.example.booking_hotel.exception.PhotoRetrevalExcetion;
 import com.example.booking_hotel.exception.PhotoRetrievalException;
 import com.example.booking_hotel.exception.ResourceNotFoundException;
 import com.example.booking_hotel.model.BookedRoom;
@@ -31,7 +30,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
-@RequestMapping("/rooms")
+@RequestMapping("/api/v1/rooms")
 public class RoomController {
 
     private final RoomServiceImpl roomService;

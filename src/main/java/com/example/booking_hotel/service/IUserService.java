@@ -11,4 +11,12 @@ public interface IUserService {
     User getUser(String email);
 
     User getUserProfile(String userId);
+
+    User getUserByEmail(String email);
+
+    void createPasswordResetTokenForUser(User user, String otp);
+
+    boolean validateOTP(String email, String otp);
+
+    void updatePassword(String email, String newPassword);
 }

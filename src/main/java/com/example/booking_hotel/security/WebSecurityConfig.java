@@ -57,8 +57,8 @@ public class WebSecurityConfig {
                         exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(auth -> auth
-                        .antMatchers("/auth/**", "/rooms/types", "/rooms/all-rooms", "/rooms/room/{roomId}","/users/profile/**","/users/{email}").permitAll() // Cho phép tất cả mọi người truy cập
-                        .antMatchers("/rooms/add/new-room", "/rooms/delete/room/**", "/rooms/update/**","/users/all_roles").hasAuthority("ADMIN") // Chỉ cho phép ADMIN truy cập vào CRUD Room
+                        .antMatchers("/api/v1/auth/**", "/api/v1/rooms/types", "/api/v1/rooms/all-rooms", "/api/v1/rooms/room/{roomId}","/api/v1/users/profile/**","/api/v1/users/{email}").permitAll() // Cho phép tất cả mọi người truy cập
+                        .antMatchers("/api/v1/rooms/add/new-room", "/api/v1/rooms/delete/room/**", "/api/v1/rooms/update/**","/api/v1/users/all_roles").hasAuthority("ADMIN") // Chỉ cho phép ADMIN truy cập vào CRUD Room
                         .anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
