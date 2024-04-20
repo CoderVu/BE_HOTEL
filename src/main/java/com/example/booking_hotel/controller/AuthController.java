@@ -25,7 +25,7 @@ import java.util.List;
 
 import static com.example.booking_hotel.util.OTPGenerator.generateOTP;
 
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
+@CrossOrigin
 
 @RestController
 @RequestMapping("/api/v1/auth")

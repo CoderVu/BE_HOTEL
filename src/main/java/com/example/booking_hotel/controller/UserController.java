@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
@@ -20,12 +20,10 @@ public class UserController {
     private final IUserService userService;
 
     @GetMapping("/all_roles")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<User>> getUsers() {
 
         return new ResponseEntity<>(userService.getUsers(), HttpStatus.FOUND);
     }
-    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     @GetMapping("/profile/{userId}")
     public ResponseEntity<?> getUserProfile(@PathVariable("userId") String userId) {
         try {
@@ -40,7 +38,6 @@ public class UserController {
     }
 
     @GetMapping("/{email}")
-    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     public ResponseEntity<?> getUserByEmail(@PathVariable("email") String email) {
         try {
             User theUser = userService.getUser(email);
@@ -53,7 +50,6 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{userId}")
-    @PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('USER') and #email == principal.username)")
     public ResponseEntity<String> deleteUser(@PathVariable("userId") String email) {
         try {
             userService.deleteUser(email);

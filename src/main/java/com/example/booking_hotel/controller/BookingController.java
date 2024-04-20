@@ -20,7 +20,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
+@CrossOrigin
 @RequestMapping("/api/v1/bookings")
 public class BookingController {
 
@@ -28,7 +28,6 @@ public class BookingController {
     private final RoomServiceImpl roomService;
     @Autowired
     private EmailService emailService;
-
     @GetMapping("/all-bookings")
     public ResponseEntity<List<BookingRespose>> getAllBookings() {
         List<BookedRoom> bookings = bookingService.getAllBookings();
@@ -51,15 +50,6 @@ public class BookingController {
         }
     }
 
-//    @PostMapping("/room/{roomId}/bookings")
-//    public ResponseEntity<?> saveBooking(@PathVariable Long roomId, @RequestBody BookedRoom bookingRequest) {
-//        try {
-//            String confirmationCode = bookingService.saveBooking(roomId, bookingRequest);
-//            return ResponseEntity.ok(confirmationCode);
-//        } catch (InvalidBookingRequestException e) {
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//    }
 @PostMapping("/room/{roomId}/bookings")
 public ResponseEntity<?> saveBooking(@PathVariable Long roomId,
                                      @RequestBody BookedRoom bookingRequest){

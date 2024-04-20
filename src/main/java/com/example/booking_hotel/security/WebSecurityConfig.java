@@ -57,8 +57,13 @@ public class WebSecurityConfig {
                         exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(auth -> auth
-                        .antMatchers("/api/v1/auth/**", "/api/v1/rooms/types", "/api/v1/rooms/all-rooms", "/api/v1/rooms/room/{roomId}","/api/v1/users/profile/**","/api/v1/users/{email}").permitAll() // Cho phép tất cả mọi người truy cập
-                        .antMatchers("/api/v1/rooms/add/new-room", "/api/v1/rooms/delete/room/**", "/api/v1/rooms/update/**","/api/v1/users/all_roles").hasAuthority("ADMIN") // Chỉ cho phép ADMIN truy cập vào CRUD Room
+                        .antMatchers("/api/v1/bookings/all-bookings","/api/v1/users/all_roles").hasAuthority("ADMIN") // Only allow ADMIN to access all bookings
+                        .antMatchers("/api/v1/rooms/add/new-room").hasAuthority("ADMIN") // Only allow ADMIN to add new room
+                        .antMatchers("/api/v1/rooms/update/{roomId}").hasAuthority("ADMIN") // Only allow ADMIN to update room
+                        .antMatchers("/api/v1/rooms/room/{roomId}").hasAuthority("ADMIN") // Only allow ADMIN to view room
+                        .antMatchers("/api/v1/rooms/delete/room/{roomId}").hasAuthority("ADMIN") // Only allow ADMIN to delete room
+                        .antMatchers("/api/v1/auth/**", "/api/v1/rooms/types", "/api/v1/rooms/all-rooms", "/api/v1/rooms/available-rooms","/api/v1/rooms/room/{roomId}",
+                                "/api/v1/users/profile/**","/api/v1/users/{email}","/api/v1/bookings/**").permitAll() // Allow everyone to access
                         .anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
