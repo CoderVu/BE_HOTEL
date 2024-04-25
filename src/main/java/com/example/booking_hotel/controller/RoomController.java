@@ -29,9 +29,9 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin
 @RequestMapping("/api/v1/rooms")
-public class RoomController {
+public class    RoomController {
 
     private final RoomServiceImpl roomService;
     private final BookingService bookingService;
@@ -46,7 +46,6 @@ public class RoomController {
             RoomModel roomModel = new RoomModel(savedRoom.getId(), savedRoom.getRoomType(), savedRoom.getRoomPrice());
             return ResponseEntity.ok(roomModel);
         } catch (SQLException | IOException e) {
-            // Xử lý lỗi nếu có
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

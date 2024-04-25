@@ -29,7 +29,7 @@ public class UserService implements IUserService {
 
     @Override
     public User registerUser(User user) {
-        if (userRepository.existsByEmail(user.getEmail())){
+        if (userRepository.existsByEmail(user.getEmail())) {
             throw new UserAlreadyExistsException(user.getEmail() + " already exists");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -48,7 +48,7 @@ public class UserService implements IUserService {
     @Override
     public void deleteUser(String email) {
         User theUser = getUser(email);
-        if (theUser != null){
+        if (theUser != null) {
             userRepository.deleteByEmail(email);
         }
 
@@ -59,16 +59,19 @@ public class UserService implements IUserService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
+
     @Override
     public User getUserProfile(String userId) {
         return userRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + userId));
     }
+
     @Override
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElse(null);
     }
+
     @Override
     public void createPasswordResetTokenForUser(User user, String otp) {
         String token = UUID.randomUUID().toString();
@@ -80,6 +83,7 @@ public class UserService implements IUserService {
         passwordResetToken.setOtp(otp);
         passwordResetTokenRepository.save(passwordResetToken);
     }
+
     @Override
     public boolean validateOTP(String email, String otp) {
         Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findTopByEmailOrderByExpiryDateDesc(email);
@@ -106,10 +110,22 @@ public class UserService implements IUserService {
         // Lấy người dùng từ cơ sở dữ liệu bằng email
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
         // Cập nhật mật khẩu mới cho người dùng
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
+    @Override
+    public void updateUser(User user) {
+        User existingUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        existingUser.setEmail(user.getEmail());
+        existingUser.setFirstName(user.getFirstName());
+        existingUser.setLastName(user.getLastName());
+        existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(existingUser);
+    }
 
 }
+
+
+

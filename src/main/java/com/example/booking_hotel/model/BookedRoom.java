@@ -28,6 +28,14 @@ public class BookedRoom {
     @Column(name = "guest_fullname")
     private String guestName;
 
+    public String getGuestEmail() {
+        return guestEmail;
+    }
+
+    public void setGuestEmail(String guestEmail) {
+        this.guestEmail = guestEmail;
+    }
+
     @Column(name = "guest_email")
     private String guestEmail;
 

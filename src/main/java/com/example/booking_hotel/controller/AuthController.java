@@ -95,7 +95,6 @@ public class AuthController {
                                                   @RequestParam("newPassword") String newPassword) {
         try {
             // Kiểm tra mã OTP có hợp lệ không
-
             boolean isOTPValid = userService.validateOTP(email, otp);
             if (!isOTPValid) {
                 return ResponseEntity.badRequest().body("Invalid OTP");
@@ -107,6 +106,16 @@ public class AuthController {
             return ResponseEntity.ok("Password reset successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to reset password: " + e.getMessage());
+        }
+    }
+    @PostMapping("/update-user/{userId}")
+    public ResponseEntity<?> updateUser(@PathVariable Long userId, @RequestBody User user) {
+        try {
+            user.setId(userId); // Đặt ID cho người dùng từ đường dẫn URL
+            userService.updateUser(user);
+            return ResponseEntity.ok("User updated successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

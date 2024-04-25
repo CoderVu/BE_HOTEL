@@ -3,6 +3,7 @@ package com.example.booking_hotel.service;
 import com.example.booking_hotel.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IUserService {
     User registerUser(User user);
@@ -19,4 +20,5 @@ public interface IUserService {
     boolean validateOTP(String email, String otp);
 
     void updatePassword(String email, String newPassword);
+    void updateUser(User user);
 }

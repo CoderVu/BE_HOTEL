@@ -49,7 +49,59 @@ public class BookingController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
     }
+    @GetMapping("/history-booking/email/{email}")
+    public ResponseEntity<List<BookingRespose>> getBookingHistoryByEmail(@PathVariable String email) {
+        List<BookedRoom> bookings = bookingService.getBookingsByEmail(email);
+        List<BookingRespose> bookingResponses = new ArrayList<>();
+        for (BookedRoom booking : bookings) {
+            BookingRespose bookingResponse = getBookingResponse(booking);
+            bookingResponses.add(bookingResponse);
+        }
+        return ResponseEntity.ok(bookingResponses);
+    }
 
+//@PostMapping("/room/{roomId}/bookings")
+//public ResponseEntity<?> saveBooking(@PathVariable Long roomId,
+//                                     @RequestBody BookedRoom bookingRequest){
+//    try{
+//        String confirmationCode = bookingService.saveBooking(roomId, bookingRequest);
+//
+//        // Lấy thông tin phòng đã đặt
+//        Room theRoom = roomService.getRoomById(roomId).orElseThrow(() -> new ResourceNotFoundException("Room not found with id: " + roomId));
+//
+//        // Kiểm tra và xử lý nếu các giá trị là null
+//        String guestName = bookingRequest.getGuestName() != null ? bookingRequest.getGuestName() : "Khách hàng";
+//        String checkInDate = bookingRequest.getCheckInDate() != null ? bookingRequest.getCheckInDate().toString() : "không xác định";
+//        String checkOutDate = bookingRequest.getCheckOutDate() != null ? bookingRequest.getCheckOutDate().toString() : "không xác định";
+//        String roomType = theRoom.getRoomType() != null ? theRoom.getRoomType() : "không xác định";
+//        String roomPrice = theRoom.getRoomPrice() != null ? theRoom.getRoomPrice().toString() : "không xác định";
+//
+//        // Gửi email tới địa chỉ của người đặt phòng
+//        String guestEmail = bookingRequest.getGuestEmail();
+//        String emailSubject = "Xác nhận đặt phòng";
+//        String emailContent = String.format("Xin chào %s,\n"
+//                        + "Bạn đã đặt phòng thành công.\n"
+//                        + "Thông tin đặt phòng:\n"
+//                        + "- Mã xác nhận: %s\n"
+//                        + "- Ngày check-in: %s\n"
+//                        + "- Ngày check-out: %s\n"
+//                        + "- Loại phòng: %s\n"
+//                        + "- Giá phòng: %s\n"
+//                        + "Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.",
+//                guestName,
+//                confirmationCode,
+//                checkInDate,
+//                checkOutDate,
+//                roomType,
+//                roomPrice);
+//
+//        emailService.sendEmail(guestEmail, emailSubject, emailContent);
+//
+//        return ResponseEntity.ok("Room booked successfully, Your booking confirmation code is: " + confirmationCode);
+//    } catch (InvalidBookingRequestException e){
+//        return ResponseEntity.badRequest().body(e.getMessage());
+//    }
+//}
 @PostMapping("/room/{roomId}/bookings")
 public ResponseEntity<?> saveBooking(@PathVariable Long roomId,
                                      @RequestBody BookedRoom bookingRequest){
@@ -66,25 +118,30 @@ public ResponseEntity<?> saveBooking(@PathVariable Long roomId,
         String roomType = theRoom.getRoomType() != null ? theRoom.getRoomType() : "không xác định";
         String roomPrice = theRoom.getRoomPrice() != null ? theRoom.getRoomPrice().toString() : "không xác định";
 
+        // Tạo nội dung email dưới dạng HTML với CSS
+        String emailSubject = "Xác nhận đặt phòng";
+        String emailContent = "<html><head><style>";
+        emailContent += "body {font-family: Arial, sans-serif;}";
+        emailContent += "h1 {color: #333333;}";
+        emailContent += "ul {list-style-type: none;}";
+        emailContent += "li {margin-bottom: 10px;}";
+        emailContent += "</style></head><body>";
+        emailContent += "<h1>Xác nhận đặt phòng</h1>";
+        emailContent += "<p>Xin chào " + guestName + ",</p>";
+        emailContent += "<p>Bạn đã đặt phòng thành công.</p>";
+        emailContent += "<p>Thông tin đặt phòng:</p>";
+        emailContent += "<ul>";
+        emailContent += "<li><strong>Mã xác nhận:</strong> " + confirmationCode + "</li>";
+        emailContent += "<li><strong>Ngày check-in:</strong> " + checkInDate + "</li>";
+        emailContent += "<li><strong>Ngày check-out:</strong> " + checkOutDate + "</li>";
+        emailContent += "<li><strong>Loại phòng:</strong> " + roomType + "</li>";
+        emailContent += "<li><strong>Giá phòng:</strong> " + roomPrice + "</li>";
+        emailContent += "</ul>";
+        emailContent += "<p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</p>";
+        emailContent += "</body></html>";
+
         // Gửi email tới địa chỉ của người đặt phòng
         String guestEmail = bookingRequest.getGuestEmail();
-        String emailSubject = "Xác nhận đặt phòng";
-        String emailContent = String.format("Xin chào %s,\n"
-                        + "Bạn đã đặt phòng thành công.\n"
-                        + "Thông tin đặt phòng:\n"
-                        + "- Mã xác nhận: %s\n"
-                        + "- Ngày check-in: %s\n"
-                        + "- Ngày check-out: %s\n"
-                        + "- Loại phòng: %s\n"
-                        + "- Giá phòng: %s\n"
-                        + "Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.",
-                guestName,
-                confirmationCode,
-                checkInDate,
-                checkOutDate,
-                roomType,
-                roomPrice);
-
         emailService.sendEmail(guestEmail, emailSubject, emailContent);
 
         return ResponseEntity.ok("Room booked successfully, Your booking confirmation code is: " + confirmationCode);
