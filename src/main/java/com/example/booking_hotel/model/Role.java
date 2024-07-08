@@ -15,6 +15,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class Role {
+    public static final String ROLE_USER = "ROLE_USER";
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

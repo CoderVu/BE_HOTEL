@@ -62,6 +62,8 @@ public class WebSecurityConfig {
                         .antMatchers("/api/v1/bookings/confirmation/{confirmationCode}").hasAnyRole("ADMIN","USER")
                         .antMatchers("/api/v1/bookings/user/{userId}/bookings").hasAnyRole("ADMIN","USER")
                         .antMatchers("/api/v1/auth/update-user/{userId}").hasAnyRole("ADMIN","USER")
+                        .antMatchers("/api/v1/ratings/rate/**").hasAnyRole("ADMIN","USER") // Only allow ADMIN and USER to rate room
+
                         .antMatchers("/api/v1/rooms/add/new-room").hasRole("ADMIN") // Only allow ADMIN to add new room
                         .antMatchers("/api/v1/rooms/update/{roomId}").hasRole("ADMIN") // Only allow ADMIN to update room
                         .antMatchers("/api/v1/rooms/room/{roomId}").hasRole("ADMIN") // Only allow ADMIN to view room

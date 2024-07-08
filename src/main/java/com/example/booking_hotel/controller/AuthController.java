@@ -3,12 +3,13 @@ package com.example.booking_hotel.controller;
 import com.example.booking_hotel.exception.UserAlreadyExistsException;
 import com.example.booking_hotel.model.User;
 import com.example.booking_hotel.request.LoginRequest;
-import com.example.booking_hotel.respository.JwtResponse;
+import com.example.booking_hotel.respo.Respose.JwtResponse;
 import com.example.booking_hotel.security.jwt.JwtUtils;
 import com.example.booking_hotel.security.user.HotelUserDetails;
 import com.example.booking_hotel.service.EmailService;
 import com.example.booking_hotel.service.IUserService;
 import com.example.booking_hotel.util.OTPGenerator;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +23,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-
-import static com.example.booking_hotel.util.OTPGenerator.generateOTP;
 
 @CrossOrigin
 
@@ -73,13 +72,9 @@ public class AuthController {
             if (user == null) {
                 return ResponseEntity.badRequest().body("Email not found");
             }
-
-            // Tạo mã xác thực và lưu vào cơ sở dữ liệu
             String otp = OTPGenerator.generateOTP(6);
 
             userService.createPasswordResetTokenForUser(user, otp);
-
-            // Gửi email chứa mã xác thực đến email của người dùng
             String subject = "Password Reset Request";
             String content = "Your OTP for password reset is: " + otp;
             emailService.sendEmail(email, subject, content);

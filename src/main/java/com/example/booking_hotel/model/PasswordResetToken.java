@@ -18,7 +18,7 @@ public class PasswordResetToken {
 
     private LocalDateTime expiryDate; // Expiry date of the token
 
-    private String otp; // One-time password
+    private String otp;
 
     public String getEmail() {
         return email;

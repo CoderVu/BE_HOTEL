@@ -1,10 +1,9 @@
 package com.example.booking_hotel.service;
 
 import com.example.booking_hotel.model.BookedRoom;
-import com.example.booking_hotel.respository.BookingRespose;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BookingServiceImpl {
 
@@ -19,4 +18,6 @@ public interface BookingServiceImpl {
     void cancelBooking(Long bookingId);
 
     List<BookedRoom> getBookingsByEmail(String email);
+
+    Optional<BookedRoom> getBookingById(Long bookingId);
 }

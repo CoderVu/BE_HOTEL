@@ -26,15 +26,15 @@ public class UserController {
     }
     @GetMapping("/profile/{userId}")
     public ResponseEntity<?> getUserProfile(@PathVariable("userId") String userId) {
+        User userProfile = null;
         try {
-            // Assuming you have a service method to retrieve user profile by userId
-            User userProfile = userService.getUserProfile(userId);
-            return ResponseEntity.ok(userProfile);
+            userProfile = userService.getUserProfile(userId);
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching user profileee");
         }
+        return ResponseEntity.ok(userProfile);
     }
 
     @GetMapping("/{email}")

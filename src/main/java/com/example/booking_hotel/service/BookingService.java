@@ -4,7 +4,7 @@ import com.example.booking_hotel.exception.InvalidBookingRequestException;
 import com.example.booking_hotel.exception.ResourceNotFoundException;
 import com.example.booking_hotel.model.BookedRoom;
 import com.example.booking_hotel.model.Room;
-import com.example.booking_hotel.respository.BookingRepository;
+import com.example.booking_hotel.respo.Repositoty.BookingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -81,5 +81,8 @@ public class BookingService implements BookingServiceImpl {
     }
 
 
-
+    @Override
+    public Optional<BookedRoom> getBookingById(Long bookingId) {
+        return bookingRepository.findById(bookingId);
+    }
 }

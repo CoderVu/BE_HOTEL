@@ -1,4 +1,4 @@
-package com.example.booking_hotel.respository;
+package com.example.booking_hotel.respo.Repositoty;
 
 import com.example.booking_hotel.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;

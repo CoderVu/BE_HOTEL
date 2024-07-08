@@ -4,9 +4,9 @@ import com.example.booking_hotel.exception.UserAlreadyExistsException;
 import com.example.booking_hotel.model.PasswordResetToken;
 import com.example.booking_hotel.model.Role;
 import com.example.booking_hotel.model.User;
-import com.example.booking_hotel.respository.PasswordResetTokenRepository;
-import com.example.booking_hotel.respository.RoleRepository;
-import com.example.booking_hotel.respository.UserRepository;
+import com.example.booking_hotel.respo.Repositoty.PasswordResetTokenRepository;
+import com.example.booking_hotel.respo.Repositoty.RoleRepository;
+import com.example.booking_hotel.respo.Repositoty.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,7 +34,11 @@ public class UserService implements IUserService {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         System.out.println(user.getPassword());
-        Role userRole = roleRepository.findByName("USER").get();
+        Optional<Role> optionalRole = roleRepository.findByName("ROLE_USER");
+        if (!optionalRole.isPresent()) {
+            throw new RuntimeException("ROLE_USER not found");
+        }
+        Role userRole = optionalRole.get();
         user.setRoles(Collections.singletonList(userRole));
         return userRepository.save(user);
     }

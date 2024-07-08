@@ -1,4 +1,4 @@
-package com.example.booking_hotel.respository;
+package com.example.booking_hotel.respo.Respose;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,28 +8,39 @@ import java.util.Base64;
 import java.util.List;
 @Data
 @NoArgsConstructor
-public class RoomModel {
+public class RoomResponse {
     private Long id;
     private String roomType;
     private BigDecimal roomPrice;
     private  boolean isBooked ;
+    private String description;
     private String photo;
+    private Double averageRating = 0.0;
+    private Integer ratingCount = 0;
     private List<BookingRespose> bookingResposeList;
 
-    public RoomModel(Long id, String roomType, BigDecimal roomPrice) {
+    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, String description, Double averageRating, Integer ratingCount) {
         this.id = id;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
+        this.description = description;
+        this.averageRating = averageRating;
+        this.ratingCount = ratingCount;
+
+
     }
 
-    public RoomModel(Long id, String roomType, BigDecimal roomPrice, boolean isBooked,
-                        byte[] photoBytes , List<BookingRespose> bookings) {
+    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, String description, boolean isBooked,
+                        byte[] photoBytes , List<BookingRespose> bookings, Double averageRating, Integer ratingCount) {
         this.id = id;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
+        this.description = description;
         this.isBooked = isBooked;
         this.photo = photoBytes != null ? Base64.getEncoder().encodeToString(photoBytes) : null;
         this.bookingResposeList = bookings;
+        this.averageRating = averageRating;
+        this.ratingCount = ratingCount;
     }
 
 }

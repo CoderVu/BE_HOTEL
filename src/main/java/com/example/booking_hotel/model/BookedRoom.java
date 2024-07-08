@@ -8,6 +8,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,14 +31,6 @@ public class BookedRoom {
     @Column(name = "guest_fullname")
     private String guestName;
 
-    public String getGuestEmail() {
-        return guestEmail;
-    }
-
-    public void setGuestEmail(String guestEmail) {
-        this.guestEmail = guestEmail;
-    }
-
     @Column(name = "guest_email")
     private String guestEmail;
 
@@ -50,11 +45,51 @@ public class BookedRoom {
 
     @Column(name = "confirmation_code")
     private String bookingConfirmationCode;
-
+    @Column(name = "is_rated")
+    private boolean isRated;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
 
+    @OneToMany(mappedBy = "bookedRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Rating> ratings = new ArrayList<>();
+
+    public boolean isRated() {
+        return isRated;
+    }
+
+    public void setRated(boolean isRated) {
+
+        this.isRated = isRated;
+    }
+
+    public double getStarRating() {
+        return starRating;
+    }
+
+    public void setStarRating(double starRating) {
+        this.starRating = starRating;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    private double starRating;
+    private String comment;
+    private LocalDateTime createdAt;
     public void calculateTotalNumberOfGuest() {
         this.totalNumOfGuest = this.numOfAdults + numOfChildren;
     }
@@ -76,4 +111,10 @@ public class BookedRoom {
     public void setBookingConfirmationCode(String bookingConfirmationCode) {
         this.bookingConfirmationCode = bookingConfirmationCode;
     }
+
+    public void setId(Long bookingId) {
+        this.bookingId = bookingId;
+    }
+
+
 }
