@@ -34,7 +34,7 @@ public class UserService implements IUserService {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         System.out.println(user.getPassword());
-        Optional<Role> optionalRole = roleRepository.findByName("ROLE_USER");
+        Optional<Role> optionalRole = roleRepository.findByName("ROLE_ADMIN");
         if (!optionalRole.isPresent()) {
             throw new RuntimeException("ROLE_USER not found");
         }
@@ -126,6 +126,7 @@ public class UserService implements IUserService {
         existingUser.setFirstName(user.getFirstName());
         existingUser.setLastName(user.getLastName());
         existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        existingUser.setAvatar(user.getAvatar());
         userRepository.save(existingUser);
     }
 

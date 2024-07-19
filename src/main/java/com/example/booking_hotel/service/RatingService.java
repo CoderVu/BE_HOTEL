@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -83,5 +84,9 @@ public class RatingService {
 
     public Optional<Rating> getRatingByBookedRoom(BookedRoom bookedRoom) {
         return ratingRepository.findByBookedRoom(bookedRoom);
+    }
+
+    public List<Rating> getAllRatingsByRoomId(Long roomId) {
+        return ratingRepository.findAllByRoomId(roomId);
     }
 }

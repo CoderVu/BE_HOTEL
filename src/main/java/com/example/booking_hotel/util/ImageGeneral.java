@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 
-public class general {
+public class ImageGeneral {
     public static String fileToBase64(InputStream inputStream) {
         if (inputStream == null)
             return "";

@@ -26,18 +26,16 @@ public class RoomResponse {
         this.description = description;
         this.averageRating = averageRating;
         this.ratingCount = ratingCount;
-
-
     }
 
-    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, String description, boolean isBooked,
-                        byte[] photoBytes , List<BookingRespose> bookings, Double averageRating, Integer ratingCount) {
+    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, String description, boolean isBooked, String photo,
+                        List<BookingRespose> bookings, Double averageRating, Integer ratingCount) {
         this.id = id;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
         this.description = description;
         this.isBooked = isBooked;
-        this.photo = photoBytes != null ? Base64.getEncoder().encodeToString(photoBytes) : null;
+        this.photo = photo;
         this.bookingResposeList = bookings;
         this.averageRating = averageRating;
         this.ratingCount = ratingCount;

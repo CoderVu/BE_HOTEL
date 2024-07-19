@@ -69,7 +69,7 @@ public class WebSecurityConfig {
                         .antMatchers("/api/v1/rooms/room/{roomId}").hasRole("ADMIN") // Only allow ADMIN to view room
                         .antMatchers("/api/v1/rooms/delete/room/{roomId}").hasRole("ADMIN") // Only allow ADMIN to delete room
                         .antMatchers("/api/v1/auth/**", "/api/v1/rooms/types", "/api/v1/rooms/all-rooms", "/api/v1/rooms/available-rooms","/api/v1/rooms/room/{roomId}",
-                                "/api/v1/users/profile/**","/api/v1/users/{email}","/api/v1/bookings/**").permitAll() // Allow everyone to access
+                                "/api/v1/users/profile/**","/api/v1/users/{email}","/api/v1/bookings/**","/api/v1/rooms/room/{roomId}/reviews").permitAll() // Allow everyone to access
                         .anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);

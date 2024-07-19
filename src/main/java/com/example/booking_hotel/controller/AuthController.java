@@ -8,8 +8,10 @@ import com.example.booking_hotel.security.jwt.JwtUtils;
 import com.example.booking_hotel.security.user.HotelUserDetails;
 import com.example.booking_hotel.service.EmailService;
 import com.example.booking_hotel.service.IUserService;
+import com.example.booking_hotel.util.ImageGeneral;
 import com.example.booking_hotel.util.OTPGenerator;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,8 +22,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.InputStream;
 import java.util.List;
 
 @CrossOrigin
@@ -104,9 +108,20 @@ public class AuthController {
         }
     }
     @PostMapping("/update-user/{userId}")
-    public ResponseEntity<?> updateUser(@PathVariable Long userId, @RequestBody User user) {
+    public ResponseEntity<?> updateUser(@PathVariable Long userId,
+                                        @RequestParam("user") String userJson,
+                                        @RequestParam("avatar") MultipartFile avatar) {
         try {
-            user.setId(userId); // Đặt ID cho người dùng từ đường dẫn URL
+            ObjectMapper objectMapper = new ObjectMapper();
+            User user = objectMapper.readValue(userJson, User.class);
+            user.setId(userId);
+
+            if (!avatar.isEmpty()) {
+                InputStream inputStream = avatar.getInputStream();
+                String base64Avatar = ImageGeneral.fileToBase64(inputStream);
+                user.setAvatar(base64Avatar);
+            }
+
             userService.updateUser(user);
             return ResponseEntity.ok("User updated successfully!");
         } catch (Exception e) {

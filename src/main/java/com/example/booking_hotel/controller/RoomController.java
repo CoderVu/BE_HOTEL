@@ -6,10 +6,12 @@ import com.example.booking_hotel.model.BookedRoom;
 import com.example.booking_hotel.model.Rating;
 import com.example.booking_hotel.model.Room;
 import com.example.booking_hotel.respo.Respose.BookingRespose;
+import com.example.booking_hotel.respo.Respose.ReviewResponse;
 import com.example.booking_hotel.respo.Respose.RoomResponse;
 import com.example.booking_hotel.service.BookingService;
 import com.example.booking_hotel.service.RatingService;
 import com.example.booking_hotel.service.RoomServiceImpl;
+import com.example.booking_hotel.util.ImageGeneral;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
@@ -44,14 +47,32 @@ public class    RoomController {
             @RequestParam("photo") MultipartFile photo,
             @RequestParam("roomType") String roomType,
             @RequestParam("roomPrice") BigDecimal roomPrice,
-            @RequestParam("description") String description)
-            {
+            @RequestParam("description") String description) {
         try {
-            Room savedRoom = roomService.addNewRoom(photo, roomType, roomPrice, description);
+            InputStream photoInputStream = photo.getInputStream();
+            String base64Photo = ImageGeneral.fileToBase64(photoInputStream);
+            Room savedRoom = roomService.addNewRoom(roomType, roomPrice, description, base64Photo);
             RoomResponse roomResponse = new RoomResponse(savedRoom.getId(), savedRoom.getRoomType(), savedRoom.getRoomPrice(), savedRoom.getDescription(), savedRoom.getAverageRating(), savedRoom.getRatingCount());
 
             return ResponseEntity.ok(roomResponse);
         } catch (SQLException | IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @PutMapping("/update/{roomId}")
+    public ResponseEntity<RoomResponse> updateRoom(@PathVariable Long roomId,
+                                                   @RequestParam(required = false) String roomType,
+                                                   @RequestParam(required = false) BigDecimal roomPrice,
+                                                   @RequestParam(required = false) String description,
+                                                   @RequestParam(required = false) MultipartFile photo) throws IOException, SQLException, PhotoRetrievalException {
+        try {
+            InputStream photoInputStream = photo.getInputStream();
+            String base64Photo = ImageGeneral.fileToBase64(photoInputStream);
+            Room updatedRoom = roomService.updateRoom(roomId, roomType, roomPrice, description, base64Photo);
+            RoomResponse roomResponse = getRoomModel(updatedRoom);
+            return ResponseEntity.ok(roomResponse);
+        }
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -88,38 +109,33 @@ public class    RoomController {
     }
 
 
-    @PutMapping("/update/{roomId}")
-    public ResponseEntity<RoomResponse> updateRoom(@PathVariable Long roomId,
-                                                   @RequestParam(required = false) String roomType,
-                                                   @RequestParam(required = false) BigDecimal roomPrice,
-                                                   @RequestParam(required = false) String description,
-                                                   @RequestParam(required = false) MultipartFile photo) throws IOException, SQLException, PhotoRetrievalException {
-        byte[] photoBytes = photo != null && !photo.isEmpty() ? photo.getBytes() : roomService.getRoomPhotoByRoomId(roomId);
-        Blob photoBlob = photoBytes != null && photoBytes.length > 0 ? new SerialBlob(photoBytes) : null;
-        Room theRoom = roomService.updateRoom(roomId, roomType, roomPrice, description, photoBytes);
-        theRoom.setPhoto(photoBlob);
-        RoomResponse roomResponse = getRoomModel(theRoom);
-        return ResponseEntity.ok(roomResponse);
-    }
-
     @GetMapping("/room/{roomId}")
     public ResponseEntity<Optional<RoomResponse>> getRoomById(@PathVariable Long roomId) {
         Optional<Room> theRoom = roomService.getRoomById(roomId);
-
-        return theRoom.map(room -> {
-            RoomResponse roomResponse = null;
-            try {
-                roomResponse = getRoomModel(room);
-            } catch (PhotoRetrievalException e) {
-                throw new RuntimeException(e);
-            }
+        if (theRoom.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        try {
+            RoomResponse roomResponse = getRoomModel(theRoom.get());
             return ResponseEntity.ok(Optional.of(roomResponse));
-        }).orElseThrow(() -> new ResourceNotFoundException("Room not found"));
-
+        } catch (PhotoRetrievalException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-
-
+    @GetMapping("/room/{roomId}/reviews")
+    public ResponseEntity<List<ReviewResponse>> getRoomReviews(@PathVariable Long roomId) {
+        List<Rating> ratings = ratingService.getAllRatingsByRoomId(roomId);
+        List<ReviewResponse> reviewResponses = new ArrayList<>();
+        for (Rating rating : ratings) {
+            ReviewResponse reviewResponse = new ReviewResponse();
+            reviewResponse.setUserEmail(rating.getUser().getEmail());
+            reviewResponse.setStars((int) rating.getStarRating());
+            reviewResponse.setComment(rating.getComment());
+            reviewResponses.add(reviewResponse);
+        }
+        return ResponseEntity.ok(reviewResponses);
+    }
 
     private RoomResponse getRoomModel(Room room) throws PhotoRetrievalException {
         // Fetch all bookings for the given room
@@ -160,15 +176,12 @@ public class    RoomController {
                 }).toList();
 
         // Retrieve photo bytes from the room if available
+        String photoBlob = room.getPhoto();
         byte[] photoBytes = null;
-        Blob photoBlob = room.getPhoto();
         if (photoBlob != null) {
-            try {
-                photoBytes = photoBlob.getBytes(1, (int) photoBlob.length());
-            } catch (SQLException e) {
-                throw new PhotoRetrievalException("Error retrieving photo", e);
-            }
+            photoBytes = Base64.getDecoder().decode(photoBlob);
         }
+        String photoString = Base64.getEncoder().encodeToString(photoBytes);
 
         // Create and return RoomResponse with booking info
         return new RoomResponse(
@@ -177,7 +190,7 @@ public class    RoomController {
                 room.getRoomPrice(),
                 room.getDescription(),
                 room.isBooked(),
-                photoBytes,
+                photoString,
                 bookingInfo,
                 room.getAverageRating(),
                 room.getRatingCount()
@@ -213,11 +226,7 @@ public class    RoomController {
             return ResponseEntity.ok(roomResponses);
         }
     }
-//    @PostMapping("/{roomId}/rate")
-//    public ResponseEntity<Void> rateRoom(@PathVariable Long roomId, @RequestParam("rating") double rating) {
-//        roomService.rateRoom(roomId, rating);
-//        return ResponseEntity.ok().build();
-//    }
+
 
 
     }
