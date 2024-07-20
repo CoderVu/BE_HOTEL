@@ -57,17 +57,17 @@ public class WebSecurityConfig {
                         exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(auth -> auth
-                        .antMatchers("/api/v1/users/all_roles").hasRole("ADMIN") // Only allow ADMIN to access all bookings
-                        .antMatchers("/api/v1/bookings/all-bookings").hasRole("ADMIN") // Only allow ADMIN to delete user
-                        .antMatchers("/api/v1/bookings/confirmation/{confirmationCode}").hasAnyRole("ADMIN","USER")
-                        .antMatchers("/api/v1/bookings/user/{userId}/bookings").hasAnyRole("ADMIN","USER")
-                        .antMatchers("/api/v1/auth/update-user/{userId}").hasAnyRole("ADMIN","USER")
-                        .antMatchers("/api/v1/ratings/rate/**").hasAnyRole("ADMIN","USER") // Only allow ADMIN and USER to rate room
+                        .antMatchers("/api/v1/users/all_roles").permitAll()// Only allow ADMIN to access all bookings
+                        .antMatchers("/api/v1/bookings/all-bookings").permitAll() // Only allow ADMIN to delete user
+                        .antMatchers("/api/v1/bookings/confirmation/{confirmationCode}").permitAll()
+                        .antMatchers("/api/v1/bookings/user/{userId}/bookings").permitAll()
+                        .antMatchers("/api/v1/auth/update-user/{userId}").permitAll()
+                        .antMatchers("/api/v1/ratings/rate/**").permitAll()// Only allow ADMIN and USER to rate room
 
-                        .antMatchers("/api/v1/rooms/add/new-room").hasRole("ADMIN") // Only allow ADMIN to add new room
-                        .antMatchers("/api/v1/rooms/update/{roomId}").hasRole("ADMIN") // Only allow ADMIN to update room
-                        .antMatchers("/api/v1/rooms/room/{roomId}").hasRole("ADMIN") // Only allow ADMIN to view room
-                        .antMatchers("/api/v1/rooms/delete/room/{roomId}").hasRole("ADMIN") // Only allow ADMIN to delete room
+                        .antMatchers("/api/v1/rooms/add/new-room").permitAll() // Only allow ADMIN to add new room
+                        .antMatchers("/api/v1/rooms/update/{roomId}").permitAll() // Only allow ADMIN to update room
+                        .antMatchers("/api/v1/rooms/room/{roomId}").permitAll() // Only allow ADMIN to view room
+                        .antMatchers("/api/v1/rooms/delete/room/{roomId}").permitAll() // Only allow ADMIN to delete room
                         .antMatchers("/api/v1/auth/**", "/api/v1/rooms/types", "/api/v1/rooms/all-rooms", "/api/v1/rooms/available-rooms","/api/v1/rooms/room/{roomId}",
                                 "/api/v1/users/profile/**","/api/v1/users/{email}","/api/v1/bookings/**","/api/v1/rooms/room/{roomId}/reviews").permitAll() // Allow everyone to access
                         .anyRequest().authenticated());
