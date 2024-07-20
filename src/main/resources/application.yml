@@ -26,9 +26,9 @@ spring:
   application:
     name: Nguyễn Minh Vũ
   datasource:
-    url: jdbc:postgresql://dpg-cqdhumggph6c73a6f7b0-a.oregon-postgres.render.com:5432/hotel_ib5d
+    url: jdbc:postgresql://dpg-cqdnc1ggph6c73a9g140-a.oregon-postgres.render.com:5432/hotel_msi7
     username: root
-    password: URW65LPYVxHPQPXu5AgGrlqm426zQ1om
+    password: LR38qmRPOdLWZsRopb0wEbtO27Lb2Fqq
     driver-class-name: org.postgresql.Driver
   security:
     jwt:
