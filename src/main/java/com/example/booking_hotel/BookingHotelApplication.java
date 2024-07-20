@@ -22,24 +22,22 @@ public class BookingHotelApplication {
 class RoleInitializer implements ApplicationRunner {
 
     private final RoleRepository roleRepository;
-    private final RoomRepository roomRepository;
 
-    public RoleInitializer(RoleRepository roleRepository, RoomRepository roomRepository) {
+
+    public RoleInitializer(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
-        this.roomRepository = roomRepository;
     }
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
-//          // Tạo role ADMIN
-//        Role adminRole = new Role("ROLE_ADMIN");
-//        roleRepository.save(adminRole);
-//        Role userRole = new Role("ROLE_USER");
-//        roleRepository.save(userRole);
-//        // Tạo phòng ngẫu nhiên
-//        Room randomRoom = Room.createRandomRoom();
-//
-//        // Lưu phòng vào cơ sở dữ liệu
-//        roomRepository.save(randomRoom);
+    public void run(ApplicationArguments args) throws Exception{
+//        Kiểm tra xem đã có role nào trong database chưa nếu chưa
+//        thì thêm role user và admin vào database
+        if(roleRepository.findByName("ROLE_USER") == null){
+            roleRepository.save(new Role("ROLE_USER"));
+        }
+        if(roleRepository.findByName("ROLE_ADMIN") == null){
+            roleRepository.save(new Role("ROLE_ADMIN"));
+        }
+
     }
 }
