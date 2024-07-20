@@ -10,6 +10,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @SpringBootApplication
 public class BookingHotelApplication {
 
@@ -22,22 +24,28 @@ public class BookingHotelApplication {
 class RoleInitializer implements ApplicationRunner {
 
     private final RoleRepository roleRepository;
+    private final RoomRepository roomRepository;
 
 
-    public RoleInitializer(RoleRepository roleRepository) {
+    public RoleInitializer(RoleRepository roleRepository , RoomRepository roomRepository) {
         this.roleRepository = roleRepository;
+        this.roomRepository = roomRepository;
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception{
 //        Kiểm tra xem đã có role nào trong database chưa nếu chưa
-//        thì thêm role user và admin vào database
-        if(roleRepository.findByName("ROLE_USER") == null){
+        if(roleRepository.findByName("ROLE_USER").isEmpty()){
             roleRepository.save(new Role("ROLE_USER"));
         }
-        if(roleRepository.findByName("ROLE_ADMIN") == null){
+        if(roleRepository.findByName("ROLE_ADMIN").isEmpty()){
             roleRepository.save(new Role("ROLE_ADMIN"));
         }
+//        Kiểm tra xem đã có room kiểm tra theo id room nào trong database chưa nếu chưa
+        if(roomRepository.findById(1L).isEmpty()){
+            roomRepository.save(new Room(1L, "Single", BigDecimal.valueOf(10.1),"Single room", false, null, null, 0.0, 0, null));
+        }
+
 
     }
 }
