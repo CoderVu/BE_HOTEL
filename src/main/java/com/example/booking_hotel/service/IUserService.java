@@ -3,7 +3,6 @@ package com.example.booking_hotel.service;
 import com.example.booking_hotel.model.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface IUserService {
     User registerUser(User user);

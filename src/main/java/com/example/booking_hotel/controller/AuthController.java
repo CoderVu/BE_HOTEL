@@ -28,6 +28,8 @@ import javax.validation.Valid;
 import java.io.InputStream;
 import java.util.List;
 
+import static com.example.booking_hotel.util.ImageGeneral.decodeBase64ToImage;
+
 @CrossOrigin
 
 @RestController
@@ -76,18 +78,42 @@ public class AuthController {
             if (user == null) {
                 return ResponseEntity.badRequest().body("Email not found");
             }
-            String otp = OTPGenerator.generateOTP(6);
 
+            String otp = OTPGenerator.generateOTP(6);
             userService.createPasswordResetTokenForUser(user, otp);
+
             String subject = "Password Reset Request";
-            String content = "Your OTP for password reset is: " + otp;
-            emailService.sendEmail(email, subject, content);
+            String base64Avatar = user.getAvatar();
+            byte[] imageBytes = decodeBase64ToImage(base64Avatar);
+
+            String content = "<html><head><style>";
+            content += "body {font-family: Arial, sans-serif;}";
+            content += "h1 {color: #333333;}";
+            content += "table {width: 100%; border-collapse: collapse;}";
+            content += "th, td {border: 1px solid #dddddd; text-align: left; padding: 8px;}";
+            content += "th {background-color: #f2f2f2;}";
+            content += "</style></head><body>";
+            content += "<h1>Password Reset Request</h1>";
+            content += "<p>Hello " + user.getFirstName() + ",</p>";
+            content += "<p>You have requested to reset your password. Please use the following OTP to reset your password:</p>";
+            content += "<table>";
+            content += "<tr><th>OTP</th><td>" + otp + "</td></tr>";
+            content += "</table>";
+            if (imageBytes != null) {
+                content += "<p>Your avatar:</p>";
+                content += "<img src='cid:avatarPhoto' alt='Avatar Image' style='width: 100px; height: auto;'>";
+            }
+            content += "<p>Thank you for using our service.</p>";
+            content += "</body></html>";
+
+            emailService.sendEmail(email, subject, content, imageBytes);
 
             return ResponseEntity.ok("An email with OTP has been sent to your email address.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to reset password: " + e.getMessage());
         }
     }
+
     @PostMapping("/confirm-reset-password")
     public ResponseEntity<?> confirmResetPassword(@RequestParam("email") String email,
                                                   @RequestParam("otp") String otp,

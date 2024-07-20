@@ -13,13 +13,22 @@ import com.example.booking_hotel.service.RatingService;
 import com.example.booking_hotel.service.RoomServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+
+import static com.example.booking_hotel.util.ImageGeneral.decodeBase64ToImage;
 
 @RequiredArgsConstructor
 @RestController
@@ -73,7 +82,8 @@ public class BookingController {
         try {
             String confirmationCode = bookingService.saveBooking(roomId, bookingRequest);
 
-            Room theRoom = roomService.getRoomById(roomId).orElseThrow(() -> new ResourceNotFoundException("Room not found with id: " + roomId));
+            Room theRoom = roomService.getRoomById(roomId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Room not found with id: " + roomId));
 
             String guestName = bookingRequest.getGuestName() != null ? bookingRequest.getGuestName() : "Khách hàng";
             String checkInDate = bookingRequest.getCheckInDate() != null ? bookingRequest.getCheckInDate().toString() : "không xác định";
@@ -100,16 +110,25 @@ public class BookingController {
             emailContent += "<li><strong>Giá phòng:</strong> " + roomPrice + "</li>";
             emailContent += "</ul>";
             emailContent += "<p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</p>";
+            emailContent += "<p>Hình ảnh của phòng:</p>";
+            emailContent += "<img src='cid:roomPhoto' alt='Room photo' style='width: 100%; max-width: 500px; height: auto;'>";
             emailContent += "</body></html>";
 
             String guestEmail = bookingRequest.getGuestEmail();
-            emailService.sendEmail(guestEmail, emailSubject, emailContent);
+            String roomPhoto = theRoom.getPhoto();
+            byte[] imageBytes = decodeBase64ToImage(roomPhoto);
+            // Gửi email kèm theo ảnh
+            emailService.sendEmail(guestEmail, emailSubject, emailContent, imageBytes);
 
             return ResponseEntity.ok("Room booked successfully, your booking confirmation code is: " + confirmationCode);
         } catch (InvalidBookingRequestException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (MessagingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while sending email");
         }
     }
+
+
 
     @DeleteMapping("/booking/{bookingId}/delete")
     public ResponseEntity<?> cancelBooking(@PathVariable Long bookingId) {

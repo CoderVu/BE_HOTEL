@@ -37,4 +37,14 @@ public class ImageGeneral {
             }
         }
     }
+
+    public static byte[] decodeBase64ToImage(String base64String) {
+        try {
+            byte[] decodedBytes = Base64.getDecoder().decode(base64String);
+            return decodedBytes;
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        return new byte[0];
+    }
 }

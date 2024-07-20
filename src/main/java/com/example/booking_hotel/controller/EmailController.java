@@ -17,7 +17,7 @@ public class EmailController {
     @PostMapping("/send")
     public ResponseEntity<?> sendEmail(@RequestBody EmailRequest emailRequest) {
         try {
-            emailService.sendEmail(emailRequest.getTo(), emailRequest.getSubject(), emailRequest.getContent());
+            emailService.sendEmail(emailRequest.getTo(), emailRequest.getSubject(), emailRequest.getContent(), null);
             return ResponseEntity.ok("Email sent successfully to: " + emailRequest.getTo());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to send email: " + e.getMessage());
