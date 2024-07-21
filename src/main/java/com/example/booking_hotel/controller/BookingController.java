@@ -3,7 +3,6 @@ package com.example.booking_hotel.controller;
 import com.example.booking_hotel.exception.InvalidBookingRequestException;
 import com.example.booking_hotel.exception.ResourceNotFoundException;
 import com.example.booking_hotel.model.BookedRoom;
-import com.example.booking_hotel.model.Rating;
 import com.example.booking_hotel.model.Room;
 import com.example.booking_hotel.respo.Respose.BookingRespose;
 import com.example.booking_hotel.respo.Respose.RoomResponse;
@@ -13,27 +12,20 @@ import com.example.booking_hotel.service.RatingService;
 import com.example.booking_hotel.service.RoomServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.booking_hotel.util.ImageGeneral.decodeBase64ToImage;
 
 @RequiredArgsConstructor
 @RestController
 @CrossOrigin
-@RequestMapping("/api/v1/bookings")
+@RequestMapping("/api/v1/booking")
 public class BookingController {
 
     private final BookingServiceImpl bookingService;
@@ -145,7 +137,8 @@ public class BookingController {
                 theRoom.getRoomPrice(),
                 theRoom.getDescription(),
                 theRoom.getAverageRating(),
-                theRoom.getRatingCount()
+                theRoom.getRatingCount(),
+                theRoom.getHotel()
         );
 
         // Create BookingRespose without rating details
@@ -163,9 +156,9 @@ public class BookingController {
                 booking.isRated(),
                 booking.getComment(),
                 booking.getCreatedAt(),
-                booking.getStarRating()
+                booking.getStarRating(),
 
-        );
+                booking.getRoom().getHotel());
 
         return bookingResponse;
     }

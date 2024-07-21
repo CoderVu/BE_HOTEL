@@ -10,7 +10,7 @@ public interface IRoleService {
     Role createRole(Role theRole);
 
     void deleteRole(Long id);
-    Role findByName(String name);
+    Role findByName(Role.RoleName name); // cập nhật kiểu tham số
 
     User removeUserFromRole(Long userId, Long roleId);
     User assignRoleToUser(Long userId, Long roleId);

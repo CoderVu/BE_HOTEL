@@ -26,26 +26,20 @@ class RoleInitializer implements ApplicationRunner {
     private final RoleRepository roleRepository;
     private final RoomRepository roomRepository;
 
-
-    public RoleInitializer(RoleRepository roleRepository , RoomRepository roomRepository) {
+    public RoleInitializer(RoleRepository roleRepository, RoomRepository roomRepository) {
         this.roleRepository = roleRepository;
         this.roomRepository = roomRepository;
     }
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception{
-//        Kiểm tra xem đã có role nào trong database chưa nếu chưa
-        if(roleRepository.findByName("ROLE_USER").isEmpty()){
-            roleRepository.save(new Role("ROLE_USER"));
+    public void run(ApplicationArguments args) throws Exception {
+        if (roleRepository.findByName(Role.RoleName.ROLE_USER).isEmpty()) {
+            roleRepository.save(new Role(Role.RoleName.ROLE_USER));
         }
-        if(roleRepository.findByName("ROLE_ADMIN").isEmpty()){
-            roleRepository.save(new Role("ROLE_ADMIN"));
+        if (roleRepository.findByName(Role.RoleName.ROLE_ADMIN).isEmpty()) {
+            roleRepository.save(new Role(Role.RoleName.ROLE_ADMIN));
         }
-//        Kiểm tra xem đã có room kiểm tra theo id room nào trong database chưa nếu chưa
-        if(roomRepository.findById(1L).isEmpty()){
-            roomRepository.save(new Room(1L, "Single", BigDecimal.valueOf(10.1),"Single room", false, null, null, 0.0, 0, null));
+        if (roleRepository.findByName(Role.RoleName.ROLE_SUPPERUSER).isEmpty()) {
+            roleRepository.save(new Role(Role.RoleName.ROLE_SUPPERUSER));
         }
-
-
     }
 }

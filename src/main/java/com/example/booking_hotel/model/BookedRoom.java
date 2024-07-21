@@ -117,4 +117,8 @@ public class BookedRoom {
     }
 
 
+    public Hotel getHotel() {
+        return room.getHotel();
+    }
+
 }

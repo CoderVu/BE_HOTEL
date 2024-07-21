@@ -1,6 +1,7 @@
 package com.example.booking_hotel.service;
 
 import com.example.booking_hotel.exception.ResourceNotFoundException;
+import com.example.booking_hotel.model.Hotel;
 import com.example.booking_hotel.model.Room;
 import com.example.booking_hotel.respo.Repositoty.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -73,13 +74,13 @@ public class RoomService implements RoomServiceImpl {
             roomRepository.deleteById(roomId);
         }
     }
-    @Override
-    public Room addNewRoom(String roomType, BigDecimal roomPrice, String description, String photo) throws SQLException, IOException {
+    public Room addNewRoom(String roomType, BigDecimal roomPrice, String description, String photo, Hotel hotel) throws SQLException, IOException {
         Room room = new Room();
         room.setRoomType(roomType);
         room.setRoomPrice(roomPrice);
         room.setDescription(description);
         room.setPhoto(photo);
+        room.setHotel(hotel); // Assign the hotel to the room
         return roomRepository.save(room);
     }
     @Override
@@ -105,11 +106,9 @@ public class RoomService implements RoomServiceImpl {
     public List<Room> getAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate, String roomType) {
         return roomRepository.findAvailableRoomsByDatesAndType(checkInDate, checkOutDate, roomType);
     }
-//    @Override
-//    public void rateRoom(Long roomId, double rating) {
-//        Room room = roomRepository.findById(roomId).orElseThrow(() -> new ResourceNotFoundException("Room not found"));
-//        room.addRating(rating);
-//        roomRepository.save(room);
-//    }
+    @Override
+    public List<Room> getRoomsByHotelId(Long hotelId) {
+        return roomRepository.findRoomsByHotelId(hotelId);
+    }
 
 }

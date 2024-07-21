@@ -1,5 +1,6 @@
 package com.example.booking_hotel.respo.Respose;
 
+import com.example.booking_hotel.model.Hotel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -24,7 +25,7 @@ public class BookingRespose {
     private LocalDateTime createdAt;
     private double starRating;
 
-    public BookingRespose(Long bookingId, LocalDate checkInDate, LocalDate checkOutDate, String guestFullName, String guestEmail, int numOfAdults, int numOfChildren, int totalNumOfGuest, String bookingConfirmationCode, RoomResponse room, boolean isRated, String comment, LocalDateTime createdAt, double starRating) {
+    public BookingRespose(Long bookingId, LocalDate checkInDate, LocalDate checkOutDate, String guestFullName, String guestEmail, int numOfAdults, int numOfChildren, int totalNumOfGuest, String bookingConfirmationCode, RoomResponse room, boolean isRated, String comment, LocalDateTime createdAt, double starRating, Hotel hotel) {
         this.bookingId = bookingId;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;

@@ -1,13 +1,17 @@
 package com.example.booking_hotel.controller;
 
 import com.example.booking_hotel.exception.UserAlreadyExistsException;
+import com.example.booking_hotel.model.Hotel;
+import com.example.booking_hotel.model.Role;
 import com.example.booking_hotel.model.User;
 import com.example.booking_hotel.request.LoginRequest;
 import com.example.booking_hotel.respo.Respose.JwtResponse;
 import com.example.booking_hotel.security.jwt.JwtUtils;
 import com.example.booking_hotel.security.user.HotelUserDetails;
 import com.example.booking_hotel.service.EmailService;
+import com.example.booking_hotel.service.HotelService;
 import com.example.booking_hotel.service.IUserService;
+import com.example.booking_hotel.service.RoleService;
 import com.example.booking_hotel.util.ImageGeneral;
 import com.example.booking_hotel.util.OTPGenerator;
 
@@ -26,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 
 import static com.example.booking_hotel.util.ImageGeneral.decodeBase64ToImage;
@@ -33,7 +38,7 @@ import static com.example.booking_hotel.util.ImageGeneral.decodeBase64ToImage;
 @CrossOrigin
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/auth/user")
 @RequiredArgsConstructor
 public class AuthController {
     private final IUserService userService;
@@ -41,17 +46,51 @@ public class AuthController {
     private final JwtUtils jwtUtils;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private HotelService hotelService;
+    @Autowired
+    private final RoleService roleService;
 
     @PostMapping("/register-user")
-    public ResponseEntity<?> registerUser(@RequestBody User user){
-        try{
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
+        try {
+            // Fetch the ROLE_USER role from the database
+            Role userRole = roleService.findByName(Role.RoleName.valueOf(Role.RoleName.ROLE_USER.name()));
+
+            // Set the user's role to ROLE_USER
+            user.setRoles(Collections.singletonList(userRole));
+
+            // Register the user
             userService.registerUser(user);
             return ResponseEntity.ok("Registration successful!");
 
-        }catch (UserAlreadyExistsException e){
+        } catch (UserAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @PostMapping("/register-admin")
+    public ResponseEntity<?> registerAdmin(@RequestBody User user) {
+        try {
+            // Fetch the ROLE_ADMIN role from the database
+            Role adminRole = roleService.findByName(Role.RoleName.valueOf(Role.RoleName.ROLE_SUPPERUSER.name()));
+
+            // Set the user's role to ROLE_ADMIN
+            user.setRoles(Collections.singletonList(adminRole));
+            // Register the user
+           userService.registerAdmin(user);
+            return ResponseEntity.ok("Registration successful!");
+
+        } catch (UserAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest request){
@@ -154,5 +193,6 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
 
 }

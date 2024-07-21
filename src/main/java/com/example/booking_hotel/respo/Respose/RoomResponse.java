@@ -1,5 +1,6 @@
 package com.example.booking_hotel.respo.Respose;
 
+import com.example.booking_hotel.model.Hotel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class RoomResponse {
     private Long id;
+    private Hotel hotel; // Add this line
     private String roomType;
     private BigDecimal roomPrice;
     private  boolean isBooked ;
@@ -19,17 +21,18 @@ public class RoomResponse {
     private Integer ratingCount = 0;
     private List<BookingRespose> bookingResposeList;
 
-    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, String description, Double averageRating, Integer ratingCount) {
+    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, String description, Double averageRating, Integer ratingCount, Hotel hotel) {
         this.id = id;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
         this.description = description;
         this.averageRating = averageRating;
         this.ratingCount = ratingCount;
+        this.hotel = hotel;
     }
 
     public RoomResponse(Long id, String roomType, BigDecimal roomPrice, String description, boolean isBooked, String photo,
-                        List<BookingRespose> bookings, Double averageRating, Integer ratingCount) {
+                        List<BookingRespose> bookings, Double averageRating, Integer ratingCount, Hotel hotel) {
         this.id = id;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
@@ -39,6 +42,8 @@ public class RoomResponse {
         this.bookingResposeList = bookings;
         this.averageRating = averageRating;
         this.ratingCount = ratingCount;
+        this.hotel = hotel;
+
     }
 
 }

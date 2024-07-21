@@ -1,4 +1,5 @@
 package com.example.booking_hotel.service;
+
 import com.example.booking_hotel.exception.RoleAlreadyExistException;
 import com.example.booking_hotel.exception.UserAlreadyExistsException;
 import com.example.booking_hotel.model.Role;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class RoleService implements IRoleService {
@@ -24,12 +26,10 @@ public class RoleService implements IRoleService {
 
     @Override
     public Role createRole(Role theRole) {
-        String roleName = theRole.getName().toUpperCase();
-        Role role = new Role(roleName);
-        if (roleRepository.existsByName(roleName)){
-            throw new RoleAlreadyExistException(theRole.getName()+" role already exists");
+        if (roleRepository.existsByName(theRole.getName())) {
+            throw new RoleAlreadyExistException(theRole.getName() + " already exists");
         }
-        return roleRepository.save(role);
+        return roleRepository.save(theRole);
     }
 
     @Override
@@ -39,41 +39,48 @@ public class RoleService implements IRoleService {
     }
 
     @Override
-    public Role findByName(String name) {
-        return roleRepository.findByName(name).get();
+    public Role findByName(Role.RoleName name) { // cập nhật kiểu tham số
+        return roleRepository.findByName(name)
+                .orElseThrow(() -> new RuntimeException("Role not found: " + name));
     }
-
     @Override
     public User removeUserFromRole(Long userId, Long roleId) {
-        Optional<User> user = userRepository.findById(userId);
-        Optional<Role>  role = roleRepository.findById(roleId);
-        if (role.isPresent() && role.get().getUsers().contains(user.get())){
-            role.get().removeUserFromRole(user.get());
-            roleRepository.save(role.get());
-            return user.get();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+
+        if (role.getUsers().contains(user)) {
+            role.removeUserFromRole(user);
+            roleRepository.save(role);
+            return user;
         }
-        throw new UsernameNotFoundException("User not found");
+
+        throw new UsernameNotFoundException("User not found in role");
     }
 
     @Override
     public User assignRoleToUser(Long userId, Long roleId) {
-        Optional<User> user = userRepository.findById(userId);
-        Optional<Role>  role = roleRepository.findById(roleId);
-        if (user.isPresent() && user.get().getRoles().contains(role.get())){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+
+        if (user.getRoles().contains(role)) {
             throw new UserAlreadyExistsException(
-                    user.get().getFirstName()+ " is already assigned to the" + role.get().getName()+ " role");
+                    user.getFirstName() + " is already assigned to the " + role.getName() + " role");
         }
-        if (role.isPresent()){
-            role.get().assignRoleToUser(user.get());
-            roleRepository.save(role.get());
-        }
-        return user.get();
+
+        role.assignRoleToUser(user);
+        roleRepository.save(role);
+        return user;
     }
 
     @Override
     public Role removeAllUsersFromRole(Long roleId) {
-        Optional<Role> role = roleRepository.findById(roleId);
-        role.ifPresent(Role::removeAllUsersFromRole);
-        return roleRepository.save(role.get());
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+        role.removeAllUsersFromRole();
+        return roleRepository.save(role);
     }
 }

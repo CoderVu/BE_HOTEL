@@ -31,8 +31,7 @@ public class Room {
 
     private boolean isBooked = false;
 
-
-    @Column(name = "photo", columnDefinition = "TEXT")
+    @Column(name = "photo", columnDefinition = "LONGTEXT")
     private String photo;
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -47,6 +46,16 @@ public class Room {
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
     private List<Rating> ratings = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "hotel_id")
+    private Hotel hotel;
+    public Hotel getHotel() {
+        return hotel;
+    }
+
+    public void setHotel(Hotel hotel) {
+        this.hotel = hotel;
+    }
     public void updateStarRating(double rating) {
         if (rating < 0 || rating > 5) {
             throw new IllegalArgumentException("Rating must be between 0 and 5.");

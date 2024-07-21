@@ -4,10 +4,13 @@ import com.example.booking_hotel.exception.UserAlreadyExistsException;
 import com.example.booking_hotel.model.PasswordResetToken;
 import com.example.booking_hotel.model.Role;
 import com.example.booking_hotel.model.User;
+
 import com.example.booking_hotel.respo.Repositoty.PasswordResetTokenRepository;
 import com.example.booking_hotel.respo.Repositoty.RoleRepository;
 import com.example.booking_hotel.respo.Repositoty.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,16 +36,28 @@ public class UserService implements IUserService {
             throw new UserAlreadyExistsException(user.getEmail() + " already exists");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        System.out.println(user.getPassword());
-        Optional<Role> optionalRole = roleRepository.findByName("ROLE_ADMIN");
+        Optional<Role> optionalRole = roleRepository.findByName(Role.RoleName.ROLE_USER);
         if (!optionalRole.isPresent()) {
-            throw new RuntimeException("ROLE_USER not found");
+            throw new RuntimeException("ROLE_ADMIN not found");
         }
         Role userRole = optionalRole.get();
         user.setRoles(Collections.singletonList(userRole));
         return userRepository.save(user);
     }
-
+    @Override
+    public User registerAdmin(User user) {
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new UserAlreadyExistsException(user.getEmail() + " already exists");
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        Optional<Role> optionalRole = roleRepository.findByName(Role.RoleName.ROLE_SUPPERUSER);
+        if (!optionalRole.isPresent()) {
+            throw new RuntimeException("ROLE_ADMIN not found");
+        }
+        Role userRole = optionalRole.get();
+        user.setRoles(Collections.singletonList(userRole));
+        return userRepository.save(user);
+    }
     @Override
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -55,7 +70,6 @@ public class UserService implements IUserService {
         if (theUser != null) {
             userRepository.deleteByEmail(email);
         }
-
     }
 
     @Override
@@ -95,29 +109,25 @@ public class UserService implements IUserService {
         if (passwordResetTokenOptional.isPresent()) {
             PasswordResetToken passwordResetToken = passwordResetTokenOptional.get();
 
-            // Check if the OTP matches and the token is not expired
             boolean isOTPValid = passwordResetToken.getOtp().equals(otp) &&
                     passwordResetToken.getExpiryDate().isAfter(LocalDateTime.now().minusMinutes(2));
 
             if (isOTPValid) {
-                // OTP is valid, you can proceed with password reset or any other action
                 return true;
             }
         }
 
-        // OTP is either invalid or expired
         return false;
     }
 
     @Override
     public void updatePassword(String email, String newPassword) {
-        // Lấy người dùng từ cơ sở dữ liệu bằng email
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        // Cập nhật mật khẩu mới cho người dùng
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
+
     @Override
     public void updateUser(User user) {
         User existingUser = userRepository.findById(user.getId())
@@ -130,7 +140,14 @@ public class UserService implements IUserService {
         userRepository.save(existingUser);
     }
 
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName();
+        return userRepository.findByEmail(currentUserName).orElse(null);
+    }
+
+    @Override
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
 }
-
-
-

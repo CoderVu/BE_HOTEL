@@ -6,6 +6,9 @@ import java.util.List;
 
 public interface IUserService {
     User registerUser(User user);
+
+    User registerAdmin(User user);
+
     List<User> getUsers();
     void deleteUser(String email);
     User getUser(String email);
@@ -20,4 +23,8 @@ public interface IUserService {
 
     void updatePassword(String email, String newPassword);
     void updateUser(User user);
+
+    User getCurrentUser();
+
+    User getUserById(Long userId);
 }
