@@ -1,35 +1,11 @@
-#server:
-#  port: 8081
-#spring:
-#  datasource:
-#    username: root
-#    password: 123456789
-#    url: jdbc:mysql://localhost:3306/booking_hotel
-#    driver-class-name: com.mysql.jdbc.Driver
-#  security:
-#    jwt:
-#      secret-key: 4545454434324326737432864237498327493274983274893274893793773298
-#      expire-length: 3600000
-#  jpa:
-#    show-sql: true
-#    hibernate:
-#      ddl-auto: update
-#      format_sql: true
-#  servlet:
-#    multipart:
-#      max-file-size: 5MB
-#      max-request-size: 5MB
-#      file-size-threshold: 2KB
 server:
   port: 8081
 spring:
-  application:
-    name: Nguyễn Minh Vũ
   datasource:
-    url: jdbc:postgresql://dpg-cqdnc1ggph6c73a9g140-a.oregon-postgres.render.com:5432/hotel_msi7
     username: root
-    password: LR38qmRPOdLWZsRopb0wEbtO27Lb2Fqq
-    driver-class-name: org.postgresql.Driver
+    password: 123456789
+    url: jdbc:mysql://localhost:3306/booking
+    driver-class-name: com.mysql.jdbc.Driver
   security:
     jwt:
       secret-key: 4545454434324326737432864237498327493274983274893274893793773298
@@ -38,12 +14,36 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
+      format_sql: true
   servlet:
     multipart:
       max-file-size: 5MB
       max-request-size: 5MB
       file-size-threshold: 2KB
+#server:
+#  port: 8081
+#spring:
+#  application:
+#    name: Nguyễn Minh Vũ
+#  datasource:
+#    url: jdbc:postgresql://dpg-cqdnc1ggph6c73a9g140-a.oregon-postgres.render.com:5432/hotel_msi7
+#    username: root
+#    password: LR38qmRPOdLWZsRopb0wEbtO27Lb2Fqq
+#    driver-class-name: org.postgresql.Driver
+#  security:
+#    jwt:
+#      secret-key: 4545454434324326737432864237498327493274983274893274893793773298
+#      expire-length: 3600000
+#  jpa:
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: update
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.PostgreSQLDialect
+#        format_sql: true
+#  servlet:
+#    multipart:
+#      max-file-size: 5MB
+#      max-request-size: 5MB
+#      file-size-threshold: 2KB
