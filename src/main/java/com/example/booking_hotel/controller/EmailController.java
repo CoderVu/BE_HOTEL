@@ -20,7 +20,7 @@ public class EmailController {
             emailService.sendEmail(emailRequest.getTo(), emailRequest.getSubject(), emailRequest.getContent(), null);
             return ResponseEntity.ok("Email sent successfully to: " + emailRequest.getTo());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to send email: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Failed to send emaill: " + e.getMessage());
         }
     }
 
