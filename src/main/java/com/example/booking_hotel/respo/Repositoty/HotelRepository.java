@@ -12,4 +12,6 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     List<Hotel> findAllByAdmin(User user);
 
     Hotel findByName(String name);
+
+    List<Hotel> findByAdmin(User admin);
 }

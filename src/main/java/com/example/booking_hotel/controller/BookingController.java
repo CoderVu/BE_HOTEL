@@ -45,9 +45,9 @@ public class BookingController {
         }
         return ResponseEntity.ok(bookingResponses);
     }
-    @GetMapping("/all-bookingOfOneHotel/{hotelId}")
-    public ResponseEntity<List<BookingRespose>> getAllBookingsOfOneHotel(@PathVariable Long hotelId) {
-        List<BookedRoom> bookings = bookingService.getAllBookingsOfOneHotel(hotelId);
+    @GetMapping("/all-bookingOfOneHotel/{adminId}")
+    public ResponseEntity<List<BookingRespose>> getAllBookingsOfOneHotel(@PathVariable Long adminId) {
+        List<BookedRoom> bookings = bookingService.getAllBookingsOfOneHotel(adminId);
         List<BookingRespose> bookingResponses = new ArrayList<>();
         for (BookedRoom booking : bookings) {
             BookingRespose bookingResponse = getBookingResponse(booking);
@@ -55,6 +55,8 @@ public class BookingController {
         }
         return ResponseEntity.ok(bookingResponses);
     }
+
+
 
     @GetMapping("/confirmation/{confirmationCode}")
     public ResponseEntity<?> getBookingByConfirmationCode(@PathVariable String confirmationCode) {

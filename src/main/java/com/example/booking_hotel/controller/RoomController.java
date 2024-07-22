@@ -254,8 +254,9 @@ public class RoomController {
     public ResponseEntity<List<RoomResponse>> getAvailableRooms(
             @RequestParam("checkInDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
             @RequestParam("checkOutDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
-            @RequestParam("roomType") String roomType) throws SQLException, PhotoRetrievalException {
-        List<Room> availableRooms = roomService.getAvailableRooms(checkInDate, checkOutDate, roomType);
+            @RequestParam("roomType") String roomType,
+            @RequestParam("address") String address) throws SQLException, PhotoRetrievalException {
+        List<Room> availableRooms = roomService.getAvailableRooms(checkInDate, checkOutDate, roomType, address);
         List<RoomResponse> roomResponses = new ArrayList<>();
         for (Room room : availableRooms) {
             byte[] photoBytes = roomService.getRoomPhotoByRoomId(room.getId());

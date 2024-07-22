@@ -181,7 +181,7 @@ public class AuthController {
     }
     @PostMapping("/update-user/{userId}")
     public ResponseEntity<?> updateUser(@PathVariable Long userId,
-                                        @RequestParam("user") String userJson,
+                                        @RequestParam(required = false, value = "user") String userJson,
                                         @RequestParam("avatar") MultipartFile avatar) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();

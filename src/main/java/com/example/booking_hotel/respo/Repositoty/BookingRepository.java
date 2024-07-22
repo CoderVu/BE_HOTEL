@@ -1,6 +1,7 @@
 package com.example.booking_hotel.respo.Repositoty;
 
 import com.example.booking_hotel.model.BookedRoom;
+import com.example.booking_hotel.model.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -12,5 +13,6 @@ public interface BookingRepository extends JpaRepository<BookedRoom, Long> {
 
     List<BookedRoom> findByGuestEmail(String email);
 
-    List<BookedRoom> findByRoom_Hotel_Id(Long hotelId);
+    List<BookedRoom> findByRoom(Room room);
+
 }

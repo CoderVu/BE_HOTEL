@@ -103,12 +103,18 @@ public class RoomService implements RoomServiceImpl {
     }
 
     @Override
-    public List<Room> getAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate, String roomType) {
-        return roomRepository.findAvailableRoomsByDatesAndType(checkInDate, checkOutDate, roomType);
+    public List<Room> getAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate, String roomType, String address) {
+        return roomRepository.findAvailableRoomsByDatesAndType(checkInDate, checkOutDate, roomType, address);
     }
     @Override
     public List<Room> getRoomsByHotelId(Long hotelId) {
         return roomRepository.findRoomsByHotelId(hotelId);
+    }
+
+    @Override
+    public List<Room> getRoomsByHotelAddress(String address) {
+
+        return roomRepository.findRoomsByHotelAddress(address);
     }
 
 }

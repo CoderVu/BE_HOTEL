@@ -3,11 +3,17 @@ package com.example.booking_hotel.service;
 import com.example.booking_hotel.exception.InvalidBookingRequestException;
 import com.example.booking_hotel.exception.ResourceNotFoundException;
 import com.example.booking_hotel.model.BookedRoom;
+import com.example.booking_hotel.model.Hotel;
 import com.example.booking_hotel.model.Room;
+import com.example.booking_hotel.model.User;
 import com.example.booking_hotel.respo.Repositoty.BookingRepository;
+import com.example.booking_hotel.respo.Repositoty.HotelRepository;
+import com.example.booking_hotel.respo.Repositoty.RoomRepository;
+import com.example.booking_hotel.respo.Repositoty.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +22,9 @@ import java.util.Optional;
 public class BookingService implements BookingServiceImpl {
     private final BookingRepository bookingRepository;
     private final RoomServiceImpl roomService;
+    private final UserRepository userRepository;
+    private final HotelRepository hotelRepository;
+    private final RoomRepository roomRepository;
     @Override
     public List<BookedRoom> getAllBookings() {
         return bookingRepository.findAll();
@@ -30,6 +39,13 @@ public class BookingService implements BookingServiceImpl {
     public List<BookedRoom> getBookingsByEmail(String email) {
         return bookingRepository.findByGuestEmail(email);
     }
+
+    @Override
+    public List<BookedRoom> getAllBookingsOfUser(String email) {
+        return bookingRepository.findByGuestEmail(email);
+
+    }
+
     @Override
 
     public List<BookedRoom> getAllBookingByRoomId(Long roomId) {
@@ -87,7 +103,23 @@ public class BookingService implements BookingServiceImpl {
     }
 
     @Override
-    public List<BookedRoom> getAllBookingsOfOneHotel(Long hotelId) {
-        return bookingRepository.findByRoom_Hotel_Id(hotelId);
+    public List<BookedRoom> getAllBookingsOfOneHotel(Long adminId) {
+        User admin = userRepository.findById(Long.valueOf(adminId))
+                .orElseThrow(() -> new ResourceNotFoundException("Admin not found with id: " + adminId));
+
+        List<Hotel> hotels = hotelRepository.findByAdmin(admin);
+        List<BookedRoom> allBookings = new ArrayList<>();
+
+        for (Hotel hotel : hotels) {
+            List<Room> rooms = roomRepository.findByHotel(hotel);
+            for (Room room : rooms) {
+                List<BookedRoom> bookings = bookingRepository.findByRoom(room);
+                allBookings.addAll(bookings);
+            }
+        }
+
+        return allBookings;
     }
+
+
 }

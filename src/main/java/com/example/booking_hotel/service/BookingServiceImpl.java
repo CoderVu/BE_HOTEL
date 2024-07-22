@@ -11,6 +11,8 @@ public interface BookingServiceImpl {
 
     BookedRoom findByBookingConfirmationCode(String confirmationCode);
 
+    List<BookedRoom> getAllBookingsOfUser(String email);
+
     List<BookedRoom> getAllBookingByRoomId(Long roomId);
 
     String saveBooking(Long roomId, BookedRoom bookingRequest);
@@ -21,5 +23,5 @@ public interface BookingServiceImpl {
 
     Optional<BookedRoom> getBookingById(Long bookingId);
 
-    List<BookedRoom> getAllBookingsOfOneHotel(Long hotelId);
+    List<BookedRoom> getAllBookingsOfOneHotel(Long adminId);
 }

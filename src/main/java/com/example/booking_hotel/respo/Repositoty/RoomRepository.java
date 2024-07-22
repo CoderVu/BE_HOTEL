@@ -1,5 +1,6 @@
 package com.example.booking_hotel.respo.Repositoty;
 
+import com.example.booking_hotel.model.Hotel;
 import com.example.booking_hotel.model.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,12 +14,16 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
     @Query(" SELECT r FROM Room r " +
             " WHERE r.roomType LIKE %:roomType% " +
+            " AND r.hotel.address LIKE %:address% " +
             " AND r.id NOT IN (" +
             "  SELECT br.room.id FROM BookedRoom br " +
             "  WHERE ((br.checkInDate <= :checkOutDate) AND (br.checkOutDate >= :checkInDate))" +
             ")")
-
-    List<Room> findAvailableRoomsByDatesAndType(LocalDate checkInDate, LocalDate checkOutDate, String roomType);
+    List<Room> findAvailableRoomsByDatesAndType(LocalDate checkInDate, LocalDate checkOutDate, String roomType, String address);
 
     List<Room> findRoomsByHotelId(Long hotelId);
+
+    List<Room> findByHotel(Hotel hotel);
+
+    List<Room> findRoomsByHotelAddress(String address);
 }

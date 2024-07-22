@@ -21,8 +21,10 @@ public interface RoomServiceImpl {
 
     Optional<Room> getRoomById(Long roomId);
 
-    List<Room> getAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate, String roomType);
+    List<Room> getAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate, String roomType, String address);
 
 
     List<Room> getRoomsByHotelId(Long hotelId);
+
+    List<Room> getRoomsByHotelAddress(String address);
 }
