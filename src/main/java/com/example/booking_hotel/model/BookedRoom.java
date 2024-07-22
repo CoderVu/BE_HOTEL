@@ -51,6 +51,12 @@ public class BookedRoom {
     @JoinColumn(name = "room_id")
     private Room room;
 
+    @Transient
+    private Long hotelId;
+
+    public Long getHotelId() {
+        return room.getHotel().getId();
+    }
     @OneToMany(mappedBy = "bookedRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Rating> ratings = new ArrayList<>();
 

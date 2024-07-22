@@ -28,18 +28,18 @@ public class EmailService {
         helper.setTo(to);
         helper.setSubject(subject);
 
-        // Sử dụng thẻ <br> để xuống dòng
+        // Use <br> tag for line breaks
         content = content.replace("\n", "<br>");
 
-        // Nhúng ảnh vào email
+        // Embed image into email if not null
         helper.setText(content, true);
-        helper.addInline("roomPhoto", new ByteArrayResource(imageBytes), "image/jpeg");
-        helper.addInline("avatarPhoto", new ByteArrayResource(imageBytes), "image/jpeg");
+        if (imageBytes != null) {
+            helper.addInline("roomPhoto", new ByteArrayResource(imageBytes), "image/jpeg");
+            helper.addInline("avatarPhoto", new ByteArrayResource(imageBytes), "image/jpeg");
+        }
 
         javaMailSender.send(message);
     }
-
-
     public MimeMessage createMimeMessage() {
         return javaMailSender.createMimeMessage();
     }

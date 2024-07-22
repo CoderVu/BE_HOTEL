@@ -85,4 +85,9 @@ public class BookingService implements BookingServiceImpl {
     public Optional<BookedRoom> getBookingById(Long bookingId) {
         return bookingRepository.findById(bookingId);
     }
+
+    @Override
+    public List<BookedRoom> getAllBookingsOfOneHotel(Long hotelId) {
+        return bookingRepository.findByRoom_Hotel_Id(hotelId);
+    }
 }

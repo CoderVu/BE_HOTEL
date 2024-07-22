@@ -79,7 +79,9 @@ public class RoomController {
             User currentUser = userService.getCurrentUser();
 
             // Check if the current user is the admin of the hotel that the room belongs to
-            if (!roomOpt.isPresent() || !roomOpt.get().getHotel().getAdmin().equals(currentUser)) {
+            if (!roomOpt.isPresent() ||
+                    !(roomOpt.get().getHotel().getAdmin().equals(currentUser) ||
+                            currentUser.getRoles().stream().anyMatch(role -> role.getName() == Role.RoleName.ROLE_SUPPERUSER))) {
                 return new ResponseEntity<>("You are not authorized to manage this room", HttpStatus.FORBIDDEN);
             }
 

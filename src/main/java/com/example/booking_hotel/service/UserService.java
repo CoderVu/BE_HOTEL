@@ -50,7 +50,7 @@ public class UserService implements IUserService {
             throw new UserAlreadyExistsException(user.getEmail() + " already exists");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Optional<Role> optionalRole = roleRepository.findByName(Role.RoleName.ROLE_SUPPERUSER);
+        Optional<Role> optionalRole = roleRepository.findByName(Role.RoleName.ROLE_ADMIN);
         if (!optionalRole.isPresent()) {
             throw new RuntimeException("ROLE_ADMIN not found");
         }

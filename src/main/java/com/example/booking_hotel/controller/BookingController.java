@@ -35,9 +35,19 @@ public class BookingController {
     @Autowired
     private RatingService ratingService;
 
-    @GetMapping("/all-bookings")
+    @GetMapping("/all-booking")
     public ResponseEntity<List<BookingRespose>> getAllBookings() {
         List<BookedRoom> bookings = bookingService.getAllBookings();
+        List<BookingRespose> bookingResponses = new ArrayList<>();
+        for (BookedRoom booking : bookings) {
+            BookingRespose bookingResponse = getBookingResponse(booking);
+            bookingResponses.add(bookingResponse);
+        }
+        return ResponseEntity.ok(bookingResponses);
+    }
+    @GetMapping("/all-bookingOfOneHotel/{hotelId}")
+    public ResponseEntity<List<BookingRespose>> getAllBookingsOfOneHotel(@PathVariable Long hotelId) {
+        List<BookedRoom> bookings = bookingService.getAllBookingsOfOneHotel(hotelId);
         List<BookingRespose> bookingResponses = new ArrayList<>();
         for (BookedRoom booking : bookings) {
             BookingRespose bookingResponse = getBookingResponse(booking);
@@ -68,7 +78,7 @@ public class BookingController {
         return ResponseEntity.ok(bookingResponses);
     }
 
-    @PostMapping("/room/{roomId}/bookings")
+    @PostMapping("/room/{roomId}/booking")
     public ResponseEntity<?> saveBooking(@PathVariable Long roomId,
                                          @RequestBody BookedRoom bookingRequest) {
         try {

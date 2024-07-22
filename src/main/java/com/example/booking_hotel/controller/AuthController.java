@@ -75,7 +75,7 @@ public class AuthController {
     public ResponseEntity<?> registerAdmin(@RequestBody User user) {
         try {
             // Fetch the ROLE_ADMIN role from the database
-            Role adminRole = roleService.findByName(Role.RoleName.valueOf(Role.RoleName.ROLE_SUPPERUSER.name()));
+            Role adminRole = roleService.findByName(Role.RoleName.valueOf(Role.RoleName.ROLE_ADMIN.name()));
 
             // Set the user's role to ROLE_ADMIN
             user.setRoles(Collections.singletonList(adminRole));
@@ -123,7 +123,10 @@ public class AuthController {
 
             String subject = "Password Reset Request";
             String base64Avatar = user.getAvatar();
-            byte[] imageBytes = decodeBase64ToImage(base64Avatar);
+            byte[] imageBytes = null;
+            if (base64Avatar != null) {
+                imageBytes = decodeBase64ToImage(base64Avatar);
+            }
 
             String content = "<html><head><style>";
             content += "body {font-family: Arial, sans-serif;}";
@@ -138,13 +141,16 @@ public class AuthController {
             content += "<table>";
             content += "<tr><th>OTP</th><td>" + otp + "</td></tr>";
             content += "</table>";
+
             if (imageBytes != null) {
                 content += "<p>Your avatar:</p>";
                 content += "<img src='cid:avatarPhoto' alt='Avatar Image' style='width: 100px; height: auto;'>";
             }
+
             content += "<p>Thank you for using our service.</p>";
             content += "</body></html>";
 
+            // Gửi email với hoặc không có ảnh đại diện
             emailService.sendEmail(email, subject, content, imageBytes);
 
             return ResponseEntity.ok("An email with OTP has been sent to your email address.");
@@ -152,6 +158,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to reset password: " + e.getMessage());
         }
     }
+
 
     @PostMapping("/confirm-reset-password")
     public ResponseEntity<?> confirmResetPassword(@RequestParam("email") String email,

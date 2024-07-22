@@ -37,6 +37,7 @@ public class User {
     @OneToMany(mappedBy = "admin")
     @JsonIgnore // Avoid infinite recursion
     private List<Hotel> hotels = new ArrayList<>();
+
     public String getAvatar() {
         return avatar;
     }

@@ -58,6 +58,7 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(auth -> auth
                         // Only allow ROLE_USER vs ROLE_ADMIN to access add hotel
+//                        .antMatchers("/api/v1/rooms/all-rooms").hasAnyRole("USER", "ADMIN", "SUPPERUSER")
 //                        .antMatchers("/api/v1/hotel/add-hotel").hasAnyRole("USER", "ADMIN")
 //                        .antMatchers("/api/v1/rooms/admin/**").hasAnyRole("ADMIN", "SUPPERUSER")
 //                        .antMatchers("/api/v1/booking/**").hasAnyRole("USER", "ADMIN")

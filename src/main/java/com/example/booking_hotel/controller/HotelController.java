@@ -69,9 +69,13 @@ public class HotelController {
 
         return ResponseEntity.ok(hotelResponses);
     }
-    @GetMapping("/hotel/{name}")
+    @GetMapping("/{name}")
     public ResponseEntity<?> getHotelByName(@PathVariable String name) {
         Hotel hotel = hotelService.getHotelByName(name);
+
+        if (hotel == null) {
+            return new ResponseEntity<>("Hotel not found", HttpStatus.NOT_FOUND);
+        }
 
         HotelResponse hotelResponse = new HotelResponse();
         hotelResponse.setId(hotel.getId());

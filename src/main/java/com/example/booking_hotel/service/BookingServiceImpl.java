@@ -20,4 +20,6 @@ public interface BookingServiceImpl {
     List<BookedRoom> getBookingsByEmail(String email);
 
     Optional<BookedRoom> getBookingById(Long bookingId);
+
+    List<BookedRoom> getAllBookingsOfOneHotel(Long hotelId);
 }
