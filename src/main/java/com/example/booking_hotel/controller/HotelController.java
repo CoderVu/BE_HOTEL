@@ -40,6 +40,28 @@ public class HotelController {
 
         return ResponseEntity.ok("Hotel added successfully!");
     }
+    @PostMapping("/update-hotel/{id}")
+    public ResponseEntity<?> updateHotel(@PathVariable Long id, @RequestBody Hotel hotel) {
+        User currentUser = userService.getCurrentUser();
+
+        // Check if the current user is an admin
+        Role userRole = roleService.findByName(Role.RoleName.valueOf(Role.RoleName.ROLE_ADMIN.name()));
+        if (!currentUser.getRoles().contains(userRole)) {
+            return new ResponseEntity<>("You are not authorized to update a hotel", HttpStatus.FORBIDDEN);
+        }
+
+        Hotel existingHotel = hotelService.getHotelById(id);
+        if (existingHotel == null) {
+            return new ResponseEntity<>("Hotel not found", HttpStatus.NOT_FOUND);
+        }
+
+        existingHotel.setName(hotel.getName());
+        existingHotel.setAddress(hotel.getAddress());
+        hotelService.saveHotel(existingHotel);
+
+        return ResponseEntity.ok("Hotel updated successfully!");
+    }
+
     @GetMapping("/hotels/managed-by/{email}")
     public ResponseEntity<?> getHotelsManagedByUser(@PathVariable String email) {
         User user = userService.getUserByEmail(email);
