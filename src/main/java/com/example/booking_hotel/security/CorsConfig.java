@@ -16,6 +16,7 @@ public class CorsConfig {
 
         config.setAllowCredentials(true);
         config.addAllowedOriginPattern("http://localhost:3000"); // Specify your frontend URL
+        config.addAllowedOriginPattern("https://codervu.github.io"); // Specify your frontend URL
         config.addAllowedHeader("*"); // Allow any header
         config.addAllowedMethod("*"); // Allow any method (GET, POST, etc.)
         config.setMaxAge(3600L); // Max age for preflight requests
