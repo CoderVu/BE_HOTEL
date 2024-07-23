@@ -31,7 +31,7 @@ public class Room {
 
     private boolean isBooked = false;
 
-    @Column(name = "photo", columnDefinition = "LONGTEXT")
+    @Column(name = "photo", columnDefinition = "TEXT")
     private String photo;
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

@@ -41,5 +41,11 @@ class RoleInitializer implements ApplicationRunner {
         if (roleRepository.findByName(Role.RoleName.ROLE_SUPPERUSER).isEmpty()) {
             roleRepository.save(new Role(Role.RoleName.ROLE_SUPPERUSER));
         }
-    }
+
+        if(roomRepository.findById(1L).isEmpty()){
+            roomRepository.save(new Room(1L, "Single", BigDecimal.valueOf(10.1),"Single room", false, null, null, 0.0, 0, null, null));
+        }
+
+        }
+
 }

@@ -6,7 +6,6 @@ import com.example.booking_hotel.security.user.HotelUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -19,8 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
-
 @Configuration
 @RequiredArgsConstructor
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
@@ -32,6 +29,7 @@ public class WebSecurityConfig {
     public AuthTokenFilter authenticationTokenFilter(){
         return new AuthTokenFilter();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -53,39 +51,26 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(
-                        exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
+                .cors().and()
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(auth -> auth
-                        // Only allow ROLE_USER vs ROLE_ADMIN to access add hotel
-//                        .antMatchers("/api/v1/rooms/all-rooms").hasAnyRole("USER", "ADMIN", "SUPPERUSER")
-//                        .antMatchers("/api/v1/hotel/add-hotel").hasAnyRole("USER", "ADMIN")
-//                        .antMatchers("/api/v1/rooms/admin/**").hasAnyRole("ADMIN", "SUPPERUSER")
-//                        .antMatchers("/api/v1/booking/**").hasAnyRole("USER", "ADMIN")
-//
-//                        .antMatchers("/api/v1/auth/user/login",
-//                                "/api/v1/rooms/types",
-//                                "/api/v1/rooms/all-rooms",
-//                                "/api/v1/rooms/all-rooms/{hotelId}",
-//                                "/api/v1/rooms/available-rooms",
-//                                "/api/v1/rooms/room/{roomId}",
-//                                "/api/v1/users/profile/**",
-//                                "/api/v1/users/{email}",
-//
-//                                "/api/v1/rooms/room/{roomId}/reviews",
-//                                "/api/v1/hotel/hotels/managed-by/**"
-
-                        .antMatchers("/api/v1/**").permitAll() // Allow everyone to access
+                        .antMatchers("/api/v1/auth/user/update-user/{userId}").hasAnyRole("USER", "ADMIN", "SUPPERUSER")
+                        .antMatchers("/api/v1/booking/all-booking","/api/v1/booking/all-bookingOfOneHotel/{adminId}","/api/v1/booking/history-booking/email/{email}","/api/v1/booking/room/{roomId}/booking","/api/v1/booking/booking/{bookingId}/delete").hasAnyRole("USER", "ADMIN", "SUPPERUSER")
+                        .antMatchers("/api/v1/hotel/add-hotel").hasAnyRole("ADMIN", "SUPPERUSER")
+                        .antMatchers("/api/v1/ratings/rate").hasAnyRole("USER", "ADMIN", "SUPPERUSER")
+                        .antMatchers("/api/v1/roles/**").hasRole("SUPPERUSER")
+                        .antMatchers("/api/v1/users/all_roles","/api/v1/users/profile/{userId}","/api/v1/users/delete/{userId}").hasAnyRole("ADMIN", "SUPPERUSER")
+                        .antMatchers("/api/v1/rooms/admin/add/new-room","/api/v1/rooms/admin/update/{roomId}","/api/v1/rooms/delete/room/{roomId}").hasAnyRole("ADMIN", "SUPPERUSER")
+                        .antMatchers("/api/v1/auth/user/register-user","/api/v1/auth/user/register-admin","/api/v1/auth/user/login","/api/v1/auth/user/reset-password","/api/v1/auth/user/confirm-reset-password",
+                        "/api/v1/hotel/hotels/managed-by/{email}","/api/v1/hotel/hotels/all-hotels","/api/v1/hotel/{name}",
+                        "/api/v1/rooms/all-rooms/**","/api/v1/rooms/room/types","/api/v1/rooms/room/{roomId}","/api/v1/rooms/room/{roomId}/reviews","/api/v1/rooms/available-rooms",
+                        "/api/v1/users/{email}",
+                        "/api/v1/booking/confirmation/{confirmationCode}").permitAll()
                         .anyRequest().authenticated());
+
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
-
-
-
-
-
-
 }
