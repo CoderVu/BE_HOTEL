@@ -1,4 +1,4 @@
-package com.example.booking_hotel.respository;
+package com.example.booking_hotel.response;
 
 
 import lombok.Data;

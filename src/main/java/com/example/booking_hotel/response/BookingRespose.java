@@ -1,4 +1,4 @@
-package com.example.booking_hotel.respository;
+package com.example.booking_hotel.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,7 +25,7 @@ public class BookingRespose {
     private int totalNumOfGuest;
 
     private String bookingConfirmationCode;
-    private RoomModel room;
+    private RoomResponse room;
 
     public BookingRespose(Long bookingId, LocalDate checkInDate, LocalDate checkOutDate, String bookingConfirmationCode) {
         this.bookingId = bookingId;

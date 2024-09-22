@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface RoomServiceImpl {
+public interface IRoomService {
     Room addNewRoom(MultipartFile photo, String roomType, BigDecimal roomPrice) throws SQLException, IOException;
     List<String> getAllRoomTypes();
     List<Room> getAllRooms();

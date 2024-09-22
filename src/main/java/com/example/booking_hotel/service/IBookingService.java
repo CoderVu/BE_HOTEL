@@ -1,12 +1,10 @@
 package com.example.booking_hotel.service;
 
 import com.example.booking_hotel.model.BookedRoom;
-import com.example.booking_hotel.respository.BookingRespose;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public interface BookingServiceImpl {
+public interface IBookingService {
 
     List<BookedRoom> getAllBookings();
 

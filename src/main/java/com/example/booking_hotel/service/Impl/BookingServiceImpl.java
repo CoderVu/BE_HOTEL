@@ -1,21 +1,22 @@
-package com.example.booking_hotel.service;
+package com.example.booking_hotel.service.Impl;
 
 import com.example.booking_hotel.exception.InvalidBookingRequestException;
 import com.example.booking_hotel.exception.ResourceNotFoundException;
 import com.example.booking_hotel.model.BookedRoom;
 import com.example.booking_hotel.model.Room;
 import com.example.booking_hotel.respository.BookingRepository;
+import com.example.booking_hotel.service.IBookingService;
+import com.example.booking_hotel.service.IRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class BookingService implements BookingServiceImpl {
+public class BookingServiceImpl implements IBookingService {
     private final BookingRepository bookingRepository;
-    private final RoomServiceImpl roomService;
+    private final IRoomService roomService;
     @Override
     public List<BookedRoom> getAllBookings() {
         return bookingRepository.findAll();
@@ -61,7 +62,6 @@ public class BookingService implements BookingServiceImpl {
     public BookedRoom findByBookingConfirmationCode(String confirmationCode) {
         return bookingRepository.findByBookingConfirmationCode(confirmationCode)
                 .orElseThrow(() -> new ResourceNotFoundException("No booking found with booking code :"+confirmationCode));
-
     }
     private boolean roomIsAvailable(BookedRoom bookingRequest, List<BookedRoom> existingBookings) {
         return existingBookings.stream()
@@ -79,7 +79,4 @@ public class BookingService implements BookingServiceImpl {
                         && bookingRequest.getCheckOutDate().equals(bookingRequest.getCheckInDate()))
                 );
     }
-
-
-
 }

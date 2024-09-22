@@ -16,9 +16,9 @@ public class PasswordResetToken {
 
     private String token;
 
-    private LocalDateTime expiryDate; // Expiry date of the token
+    private LocalDateTime expiryDate;
 
-    private String otp; // One-time password
+    private String otp;
 
     public String getEmail() {
         return email;
@@ -30,7 +30,6 @@ public class PasswordResetToken {
 
     private String email;
 
-    // Getters and setters
     public Long getId() {
         return id;
     }

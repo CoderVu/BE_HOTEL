@@ -1,4 +1,4 @@
-package com.example.booking_hotel.service;
+package com.example.booking_hotel.service.Impl;
 
 import com.example.booking_hotel.exception.UserAlreadyExistsException;
 import com.example.booking_hotel.model.PasswordResetToken;
@@ -7,6 +7,7 @@ import com.example.booking_hotel.model.User;
 import com.example.booking_hotel.respository.PasswordResetTokenRepository;
 import com.example.booking_hotel.respository.RoleRepository;
 import com.example.booking_hotel.respository.UserRepository;
+import com.example.booking_hotel.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +22,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements IUserService {
+public class UserServiceImpl implements IUserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
@@ -90,27 +91,20 @@ public class UserService implements IUserService {
 
         if (passwordResetTokenOptional.isPresent()) {
             PasswordResetToken passwordResetToken = passwordResetTokenOptional.get();
-
-            // Check if the OTP matches and the token is not expired
             boolean isOTPValid = passwordResetToken.getOtp().equals(otp) &&
                     passwordResetToken.getExpiryDate().isAfter(LocalDateTime.now().minusMinutes(2));
 
             if (isOTPValid) {
-                // OTP is valid, you can proceed with password reset or any other action
                 return true;
             }
         }
-
-        // OTP is either invalid or expired
         return false;
     }
 
     @Override
     public void updatePassword(String email, String newPassword) {
-        // Lấy người dùng từ cơ sở dữ liệu bằng email
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        // Cập nhật mật khẩu mới cho người dùng
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }

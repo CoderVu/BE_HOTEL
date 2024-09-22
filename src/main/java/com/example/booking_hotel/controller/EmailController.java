@@ -1,7 +1,8 @@
 package com.example.booking_hotel.controller;
 
 import com.example.booking_hotel.request.EmailRequest;
-import com.example.booking_hotel.service.EmailService;
+import com.example.booking_hotel.service.IEmailService;
+import com.example.booking_hotel.service.Impl.EmailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class EmailController {
 
     @Autowired
-    private EmailService emailService;
-
+    private IEmailService emailService;
     @PostMapping("/send")
     public ResponseEntity<?> sendEmail(@RequestBody EmailRequest emailRequest) {
         try {
@@ -23,6 +23,4 @@ public class EmailController {
             return ResponseEntity.badRequest().body("Failed to send email: " + e.getMessage());
         }
     }
-
-
 }

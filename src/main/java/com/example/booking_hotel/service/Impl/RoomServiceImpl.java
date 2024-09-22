@@ -1,4 +1,4 @@
-package com.example.booking_hotel.service;
+package com.example.booking_hotel.service.Impl;
 
 import com.example.booking_hotel.exception.InternalServerException;
 import com.example.booking_hotel.exception.ResourceNotFoundException;
@@ -6,7 +6,6 @@ import com.example.booking_hotel.model.Room;
 import com.example.booking_hotel.respository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -20,9 +19,8 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class RoomService implements RoomServiceImpl {
+public class RoomServiceImpl implements com.example.booking_hotel.service.IRoomService {
     private final RoomRepository roomRepository;
-
     @Override
     public Room addNewRoom(MultipartFile file, String roomType, BigDecimal roomPrice) throws SQLException, IOException {
         Room room = new Room();

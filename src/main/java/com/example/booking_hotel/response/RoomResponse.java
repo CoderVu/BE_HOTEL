@@ -1,4 +1,4 @@
-package com.example.booking_hotel.respository;
+package com.example.booking_hotel.response;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +8,7 @@ import java.util.Base64;
 import java.util.List;
 @Data
 @NoArgsConstructor
-public class RoomModel {
+public class RoomResponse {
     private Long id;
     private String roomType;
     private BigDecimal roomPrice;
@@ -16,13 +16,13 @@ public class RoomModel {
     private String photo;
     private List<BookingRespose> bookingResposeList;
 
-    public RoomModel(Long id, String roomType, BigDecimal roomPrice) {
+    public RoomResponse(Long id, String roomType, BigDecimal roomPrice) {
         this.id = id;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
     }
 
-    public RoomModel(Long id, String roomType, BigDecimal roomPrice, boolean isBooked,
+    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, boolean isBooked,
                         byte[] photoBytes , List<BookingRespose> bookings) {
         this.id = id;
         this.roomType = roomType;

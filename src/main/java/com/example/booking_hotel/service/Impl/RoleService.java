@@ -1,10 +1,11 @@
-package com.example.booking_hotel.service;
+package com.example.booking_hotel.service.Impl;
 import com.example.booking_hotel.exception.RoleAlreadyExistException;
 import com.example.booking_hotel.exception.UserAlreadyExistsException;
 import com.example.booking_hotel.model.Role;
 import com.example.booking_hotel.model.User;
 import com.example.booking_hotel.respository.RoleRepository;
 import com.example.booking_hotel.respository.UserRepository;
+import com.example.booking_hotel.service.IRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
